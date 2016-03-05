@@ -1,4 +1,3 @@
-/* global describe, it */
 'use strict';
 
 const expect = require('chai').expect;
@@ -14,37 +13,85 @@ describe('IntegerField', function () {
             expect(field).to.be.instanceOf(IntegerField);
         });
 
-        it('should throw error when default is not a number', function () {
-            let func = () => new IntegerField({ default: '7' });
+        it('should create new instance of field when all params are specified', function () {
+            let field = new IntegerField({
+                default: 15,
+                blank: true,
+                min: 10,
+                max: 1000
+            });
 
-            expect(func).to.throw('Default value of IntegerField must be an integer');
+            expect(field).to.be.instanceOf(Field);
+            expect(field).to.be.instanceOf(IntegerField);
         });
 
-        it('should throw error when default is not an integer', function () {
-            let func = () => new IntegerField({ default: 7.7 });
+        xit('should throw error when default value is not a number', function () {
+            let call = () => new IntegerField({ default: '7' });
 
-            expect(func).to.throw('Default value of IntegerField must be an integer');
+            expect(call).to.throw('Default value must be a number');
         });
 
-        it('should throw error when "min" is not an integer', function () {
-            let func = () => new IntegerField({ min: 7.7 });
+        xit('should throw error when default value is not finite', function () {
+            let call = () => new IntegerField({ default: Infinity });
 
-            expect(func).to.throw('Min value of IntegerField must be an integer');
+            expect(call).to.throw('Default value must be a number');
         });
 
-        it('should throw error when "max" is not an integer', function () {
-            let func = () => new IntegerField({ max: true });
+        xit('should throw error when default value is not an integer', function () {
+            let call = () => new IntegerField({ default: 7.7 });
 
-            expect(func).to.throw('Max value of IntegerField must be an integer');
+            expect(call).to.throw('Default value must be an integer');
+        });
+
+        xit('should throw error when min value is not a number', function () {
+            let call = () => new IntegerField({ min: null });
+
+            expect(call).to.throw('Min value must be a number');
+        });
+
+        xit('should throw error when min value is not finite', function () {
+            let call = () => new IntegerField({ min: -Infinity });
+
+            expect(call).to.throw('Min value must be a number');
+        });
+
+        xit('should throw error when min value is not an integer', function () {
+            let call = () => new IntegerField({ min: 12.3 });
+
+            expect(call).to.throw('Min value must be a number');
+        });
+
+        xit('should throw error when max value is not a number', function () {
+            let call = () => new IntegerField({ max: true });
+
+            expect(call).to.throw('Max value must be a number');
+        });
+
+        xit('should throw error when max value is not finite', function () {
+            let call = () => new IntegerField({ max: NaN });
+
+            expect(call).to.throw('Max value must be a number');
+        });
+
+        xit('should throw error when max value is not an integer', function () {
+            let call = () => new IntegerField({ max: 0.1 });
+
+            expect(call).to.throw('Max value must be an integer');
+        });
+
+        xit('should throw error when min value is greater than max value', function () {
+            let call = () => new IntegerField({ max: -10, min: 10 });
+
+            expect(call).to.throw('Max value must be greater than min value');
         });
     });
 
     describe('deserialize method', function () {
-        it('should deserialize integer number', function () {
+        it('should deserialize an integer', function () {
             let field = new IntegerField({});
-            let result = field.deserialize(12345);
+            let result = field.deserialize(0);
 
-            expect(result).to.be.equal(12345);
+            expect(result).to.be.equal(0);
         });
 
         it('should convert string to number', function () {
@@ -54,140 +101,109 @@ describe('IntegerField', function () {
             expect(result).to.be.equal(12345);
         });
 
-        it('should throw error when value is a non-integer number', function () {
+        it('should throw error when value is a number but isn\'t an integer', function () {
             let field = new IntegerField({});
-            let func = () => field.deserialize(4.2);
+            let call = () => field.deserialize(12345.6);
 
-            expect(func).to.throw('Value must be an integer');
+            expect(call).to.throw('Value must be an integer');
         });
 
-        it('should throw error when value is a NaN', function () {
+        xit('should throw error when value is a NaN', function () {
             let field = new IntegerField({});
-            let func = () => field.deserialize(NaN);
+            let call = () => field.deserialize(NaN);
 
-            expect(func).to.throw('Value must be an integer');
+            expect(call).to.throw('Value must be a number');
         });
 
-        it('should throw error when value is an infinity', function () {
+        xit('should throw error when value is an infinity', function () {
             let field = new IntegerField({});
-            let func = () => field.deserialize(Infinity);
+            let call = () => field.deserialize(Infinity);
 
-            expect(func).to.throw('Value must be an integer');
+            expect(call).to.throw('Value must be a number');
         });
 
-        it('should throw error when value is a string which doesn\'t represent decimal number', function () {
+        xit('should throw error when value is a string which doesn\'t represent integer', function () {
             let field = new IntegerField({});
-            let func = () => field.deserialize('123af');
+            let call = () => field.deserialize('123af');
 
-            expect(func).to.throw('Value must be an integer');
+            expect(call).to.throw('Value must be an number');
         });
 
-        it('should throw error when value isn\'t a string nor a number', function () {
+        xit('should throw error when value is neither a string nor a number', function () {
             let field = new IntegerField({});
-            let func = () => field.deserialize(new Buffer(''));
+            let call = () => field.deserialize(new Buffer('123'));
 
-            expect(func).to.throw('Value must be an integer');
+            expect(call).to.throw('Value must be an number');
         });
 
-        it('should throw error when value is undefined', function () {
+        it('should throw error when value is empty', function () {
             let field = new IntegerField({});
-            let func = () => field.deserialize(undefined);
 
-            expect(func).to.throw('Value cannot be empty');
+            expect(() => {
+                field.deserialize('');
+            }).to.throw('Value cannot be empty');
+
+            expect(() => {
+                field.deserialize(null);
+            }).to.throw('Value cannot be empty');
+
+            expect(() => {
+                field.deserialize(undefined);
+            }).to.throw('Value cannot be empty');
         });
 
-        it('should use default when value is undefined and default is specified', function () {
+        it('should use default when value is empty and default value is specified', function () {
             let field = new IntegerField({ default: 5 });
-            let result = field.deserialize(undefined);
 
-            expect(result).to.be.equal(5);
+            expect(field.deserialize('')).to.be.equal(5);
+            expect(field.deserialize(null)).to.be.equal(5);
+            expect(field.deserialize(undefined)).to.be.equal(5);
         });
 
-        it('should return null when value is undefined and blank values are allowed', function () {
+        it('should return null when value is empty and blank values are allowed', function () {
             let field = new IntegerField({ blank: true });
-            let result = field.deserialize(undefined);
 
-            expect(result).to.be.equal(null);
-        });
-
-        it('should throw error when value is null', function () {
-            let field = new IntegerField({});
-            let func = () => field.deserialize(null);
-
-            expect(func).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is null and default is specified', function () {
-            let field = new IntegerField({ default: -5 });
-            let result = field.deserialize(null);
-
-            expect(result).to.be.equal(-5);
-        });
-
-        it('should return null when value is null and blank values are allowed', function () {
-            let field = new IntegerField({ blank: true });
-            let result = field.deserialize(null);
-
-            expect(result).to.be.equal(null);
-        });
-
-        it('should throw error when value is an empty string', function () {
-            let field = new IntegerField({});
-            let func = () => field.deserialize('');
-
-            expect(func).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is empty string and default is specified', function () {
-            let field = new IntegerField({ default: 1234 });
-            let result = field.deserialize('');
-
-            expect(result).to.be.equal(1234);
-        });
-
-        it('should return null when value is an empty string and blank values are allowed', function () {
-            let field = new IntegerField({ blank: true });
-            let result = field.deserialize('');
-
-            expect(result).to.be.equal(null);
+            expect(field.deserialize('')).to.be.equal(null);
+            expect(field.deserialize(null)).to.be.equal(null);
+            expect(field.deserialize(undefined)).to.be.equal(null);
         });
 
         it('should throw error when value is less than min value', function () {
             let field = new IntegerField({ min: 4 });
-            let func = () => field.deserialize(2);
+            let call = () => field.deserialize(2);
 
-            expect(func).to.throw('Value cannot be less than 4');
+            expect(call).to.throw('Value cannot be less than 4');
         });
 
         it('should throw error when value is greater than max value', function () {
             let field = new IntegerField({ max: -4 });
-            let func = () => field.deserialize(-2);
+            let call = () => field.deserialize(-2);
 
-            expect(func).to.throw('Value cannot be greater than -4');
+            expect(call).to.throw('Value cannot be greater than -4');
         });
 
-        it('should not throw error when value is equal to min value', function () {
+        it('shouldn\'t throw error when value is equal to min value', function () {
             let field = new IntegerField({ min: -5 });
             let result = field.deserialize(-5);
 
             expect(result).to.be.equal(-5);
         });
 
-        it('should not throw error when value is equal to max value', function () {
+        it('shouldn\'t throw error when value is equal to max value', function () {
             let field = new IntegerField({ max: 5 });
             let result = field.deserialize(5);
 
             expect(result).to.be.equal(5);
         });
 
-        it('should not throw error when value is greater than to min value', function () {
+        it('shouldn\'t throw error when value is greater than min value', function () {
             let field = new IntegerField({ min: -6 });
             let result = field.deserialize(6);
 
             expect(result).to.be.equal(6);
         });
 
-        it('should not throw error when value is less than to max value', function () {
+        it('shouldn\'t throw error when value is less than max value', function () {
             let field = new IntegerField({ max: 6 });
             let result = field.deserialize(-6);
 

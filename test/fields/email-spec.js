@@ -14,22 +14,27 @@ describe('EmailField', function () {
             expect(field).to.be.instanceOf(EmailField);
         });
 
-        it('should throw error when default is not a string', function () {
-            let func = () => new EmailField({ default: 7 });
+        it('should create new instance of field when all params are specified', function () {
+            let field = new EmailField({
+                default: 'test@dev.null',
+                blank: true,
+                caseSensitive: true
+            });
 
-            expect(func).to.throw('Default value of StringField must be a string');
+            expect(field).to.be.instanceOf(Field);
+            expect(field).to.be.instanceOf(EmailField);
         });
 
-        it('should throw error when default is null', function () {
-            let func = () => new EmailField({ default: null });
+        it('should throw error when default value is not a string', function () {
+            let call = () => new EmailField({ default: 7 });
 
-            expect(func).to.throw('Default value of StringField must be a string');
+            expect(call).to.throw('Default value of StringField must be a string');
         });
 
-        it('should throw error when default is not a valid email address', function () {
-            let func = () => new EmailField({ default: 'abcdef' });
+        it('should throw error when default value is not a valid email address', function () {
+            let call = () => new EmailField({ default: 'abcdef' });
 
-            expect(func).to.throw('Default value of EmailField must be a valid email address');
+            expect(call).to.throw('Default value of EmailField must be a valid email address');
         });
     });
 
@@ -48,39 +53,64 @@ describe('EmailField', function () {
             expect(result).to.be.equal('test+siabadaba@gmail.com');
         });
 
-        it('should throw error when value is not a valid email address', function () {
+        xit('should lowercase value', function () {
             let field = new EmailField({});
-            let func = () => field.deserialize('.test+siabadaba@.gmail.com');
+            let result = field.deserialize('TeSt+sIaBaDaBa.cOm');
 
-            expect(func).to.throw('Value must be a valid email address');
+            expect(result).to.be.equal('test+siabadaba@gmail.com');
         });
 
-        it('should throw error when value is not a string', function () {
-            let field = new EmailField({});
-            let func = () => field.deserialize(123);
+        xit('shouldn\'t lowercase value when caseSensitive option is enabled', function () {
+            let field = new EmailField({ caseSensitive: true });
+            let result = field.deserialize('TeSt+sIaBaDaBa.cOm');
 
-            expect(func).to.throw('Value must be a string');
+            expect(result).to.be.equal('TeSt+sIaBaDaBa.cOm');
+        });
+
+        it('should throw error when value isn\'t a valid email address', function () {
+            let field = new EmailField({});
+            let call = () => field.deserialize('.test+siabadaba@.gmail.com');
+
+            expect(call).to.throw('Value must be a valid email address');
+        });
+
+        it('should throw error when value isn\'t a string', function () {
+            let field = new EmailField({});
+            let call = () => field.deserialize(123);
+
+            expect(call).to.throw('Value must be a string');
         });
 
         it('should throw error when value is empty', function () {
             let field = new EmailField({});
-            let func = () => field.deserialize('');
 
-            expect(func).to.throw('Value cannot be empty');
+            expect(() => {
+                field.deserialize('');
+            }).to.throw('Value cannot be empty');
+
+            expect(() => {
+                field.deserialize(null);
+            }).to.throw('Value cannot be empty');
+
+            expect(() => {
+                field.deserialize(undefined);
+            }).to.throw('Value cannot be empty');
         });
 
         it('should use default when value is empty and default is specified', function () {
             let field = new EmailField({ default: 'test@test.com' });
-            let result = field.deserialize('');
 
-            expect(result).to.be.equal('test@test.com');
+            expect(field.deserialize('')).to.be.equal('test@test.com');
+            expect(field.deserialize(null)).to.be.equal('test@test.com');
+            expect(field.deserialize(undefined)).to.be.equal('test@test.com');
         });
 
         it('should return empty string when value is empty and blank values are allowed', function () {
             let field = new EmailField({ blank: true });
-            let result = field.deserialize('');
 
-            expect(result).to.be.equal('');
+            expect(field.deserialize('')).to.be.equal('');
+            expect(field.deserialize(null)).to.be.equal('');
+            expect(field.deserialize(undefined)).to.be.equal('');
         });
     });
 });

@@ -10,14 +10,13 @@ const Model = require('../lib/model');
 describe('Model', function () {
     describe('constructor', function () {
         it('should throw error when try to create instance of Model directly', function () {
-            let func = () => new Model({});
+            let call = () => new Model({});
 
-            expect(func).to.throw('You can only create instances of subclasses of Model');
+            expect(call).to.throw('You can only create instances of subclasses of Model');
         });
 
         it('should create instance of subclass of Model', function () {
             let DataModel = class extends Model {};
-
             let model = new DataModel({});
 
             expect(model).to.be.instanceOf(DataModel);
@@ -25,22 +24,26 @@ describe('Model', function () {
         });
 
         it('should deserialize fields', function () {
+            class IncrField extends Field {
+                deserialize(value) {
+                    return value + 1;
+                }
+            }
+
             let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new IntegerField();
-            DataModel.prototype.field2 = new Field();
-            DataModel.prototype.field3 = new StringField({ default: 'abc' });
+            DataModel.prototype.field1 = new IncrField();
+            DataModel.prototype.field2 = new IncrField();
 
-            let model = new DataModel({ field1: 12, field2: true });
+            let model = new DataModel({ field1: 1, field2: 2 });
 
-            expect(model).to.have.property('field1', 12);
-            expect(model).to.have.property('field2', true);
-            expect(model).to.have.property('field3', 'abc');
+            expect(model).to.have.property('field1', 2);
+            expect(model).to.have.property('field2', 3);
         });
 
         it('should ignore all non-field related properties from specified data object', function () {
             let DataModel = class extends Model {};
 
-            let model = new DataModel({ field1: 12, field2: true });
+            let model = new DataModel({ field1: 1, field2: 2 });
 
             expect(model).to.not.have.property('field1');
             expect(model).to.not.have.property('field2');
@@ -78,26 +81,30 @@ describe('Model', function () {
 
     describe('getErrors method', function () {
         it('should get all errors', function () {
-            let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new IntegerField();
-            DataModel.prototype.field2 = new Field();
-            DataModel.prototype.field3 = new StringField();
-            let model = new DataModel({ field1: 'abc', field2: false, field3: 12 });
+            class InvalidField extends Field {
+                deserialize(value) {
+                    throw new Error(value);
+                }
+            }
 
+            let DataModel = class extends Model {};
+            DataModel.prototype.field1 = new InvalidField();
+            DataModel.prototype.field2 = new InvalidField();
+
+            let model = new DataModel({ field1: 'abc', field2: 'def', field3: 12 });
             let errors = model.getErrors();
 
-            expect(errors).to.have.property('field1');
-            expect(errors).to.not.have.property('field2');
-            expect(errors).to.have.property('field3');
+            expect(errors).to.have.property('field1', 'abc');
+            expect(errors).to.have.property('field2', 'def');
+            expect(errors).to.not.have.property('field3');
         });
 
         it('should return null when there is no errors', function () {
             let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new IntegerField();
+            DataModel.prototype.field1 = new Field();
             DataModel.prototype.field2 = new Field();
-            DataModel.prototype.field3 = new StringField();
-            let model = new DataModel({ field1: 12, field2: false, field3: 'abc' });
 
+            let model = new DataModel({ field1: 12, field2: false });
             let errors = model.getErrors();
 
             expect(errors).to.be.null;
@@ -121,7 +128,6 @@ describe('Model', function () {
             let DataModel = class extends Model {
                 constructor() {
                     super();
-
                     this.field1 = 'abc';
                 }
 
