@@ -1,0 +1,30 @@
+{
+  "name": "better-models",
+  "version": "0.1.0",
+  "description": "Simple library for modeling, parsing and validating your data. Inspired by Django Models.",
+  "keywords": [ "model", "mvc", "validation", "schema" ],
+  "author": "Józef Sokołowski <github@qzb.me>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "repository": {
+    "type" : "git",
+    "url": "https://github.com/qzb/better-models"
+  },
+  "scripts": {
+    "test": "mocha --recursive --check-leaks --inline-diffs --no-exit",
+    "test-ci": "istanbul cover --report lcovonly -- node_modules/mocha/bin/_mocha --recursive --check-leaks --inline-diffs --no-exit",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --recursive --reporter=nyan"
+  },
+  "dependencies": {
+    "email-validator": "^1.0.4"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "istanbul": "^0.4.2",
+    "mocha": "^2.3.4"
+  }
+}
