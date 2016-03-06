@@ -28,13 +28,13 @@ describe('EmailField', function () {
         it('should throw error when default value is not a string', function () {
             let call = () => new EmailField({ default: 7 });
 
-            expect(call).to.throw('Default value of StringField must be a string');
+            expect(call).to.throw('Default value must be a string');
         });
 
         it('should throw error when default value is not a valid email address', function () {
             let call = () => new EmailField({ default: 'abcdef' });
 
-            expect(call).to.throw('Default value of EmailField must be a valid email address');
+            expect(call).to.throw('Default value must be a valid email address');
         });
     });
 

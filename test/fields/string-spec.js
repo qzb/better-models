@@ -30,31 +30,31 @@ describe('StringField', function () {
         it('should throw error when default value is not a string', function () {
             let call = () => new StringField({ default: 7 });
 
-            expect(call).to.throw('Default value of StringField must be a string');
+            expect(call).to.throw('Default value must be a string');
         });
 
         it('should throw error when min length isn\'t an integer', function () {
             let call = () => new StringField({ minLength: 7.000001 });
 
-            expect(call).to.throw('Min length of StringField must be a positive integer');
+            expect(call).to.throw('Min length must be a positive integer');
         });
 
         it('should throw error when min length is negative', function () {
             let call = () => new StringField({ minLength: -1 });
 
-            expect(call).to.throw('Min length of StringField must be a positive integer');
+            expect(call).to.throw('Min length must be a positive integer');
         });
 
         it('should throw error when max length isn\'t an integer', function () {
             let call = () => new StringField({ maxLength: 5.55555 });
 
-            expect(call).to.throw('Max length of StringField must be a positive integer');
+            expect(call).to.throw('Max length must be a positive integer');
         });
 
         it('should throw error when max length is negative', function () {
             let call = () => new StringField({ maxLength: -1 });
 
-            expect(call).to.throw('Max length of StringField must be a positive integer');
+            expect(call).to.throw('Max length must be a positive integer');
         });
 
         it('should throw error when min length value is greater than max length value', function () {
