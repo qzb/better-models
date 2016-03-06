@@ -53,18 +53,18 @@ describe('EmailField', function () {
             expect(result).to.be.equal('test+siabadaba@gmail.com');
         });
 
-        xit('should lowercase value', function () {
+        it('should lowercase value', function () {
             let field = new EmailField({});
-            let result = field.deserialize('TeSt+sIaBaDaBa.cOm');
+            let result = field.deserialize('TeSt@sIaBaDaBa.cOm');
 
-            expect(result).to.be.equal('test+siabadaba@gmail.com');
+            expect(result).to.be.equal('test@siabadaba.com');
         });
 
-        xit('shouldn\'t lowercase value when caseSensitive option is enabled', function () {
+        it('shouldn\'t lowercase value when caseSensitive option is enabled', function () {
             let field = new EmailField({ caseSensitive: true });
-            let result = field.deserialize('TeSt+sIaBaDaBa.cOm');
+            let result = field.deserialize('TeSt@sIaBaDaBa.cOm');
 
-            expect(result).to.be.equal('TeSt+sIaBaDaBa.cOm');
+            expect(result).to.be.equal('TeSt@sIaBaDaBa.cOm');
         });
 
         it('should throw error when value isn\'t a valid email address', function () {
