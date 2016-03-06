@@ -13,7 +13,7 @@ $ npm install better-models
 ```
 
 [npm-image]: https://img.shields.io/npm/v/better-models.svg
-[npm-url]: https://npmjs.org/qzb/better-models
+[npm-url]: https://npmjs.org/package/better-models
 [travis-image]: https://img.shields.io/travis/qzb/better-models/master.svg
 [travis-url]: https://travis-ci.org/qzb/better-models
 [coveralls-image]: https://img.shields.io/coveralls/qzb/better-models/master.svg
