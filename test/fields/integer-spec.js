@@ -25,61 +25,61 @@ describe('IntegerField', function () {
             expect(field).to.be.instanceOf(IntegerField);
         });
 
-        xit('should throw error when default value is not a number', function () {
+        it('should throw error when default value is not a number', function () {
             let call = () => new IntegerField({ default: '7' });
 
             expect(call).to.throw('Default value must be a number');
         });
 
-        xit('should throw error when default value is not finite', function () {
+        it('should throw error when default value is not finite', function () {
             let call = () => new IntegerField({ default: Infinity });
 
             expect(call).to.throw('Default value must be a number');
         });
 
-        xit('should throw error when default value is not an integer', function () {
+        it('should throw error when default value is not an integer', function () {
             let call = () => new IntegerField({ default: 7.7 });
 
             expect(call).to.throw('Default value must be an integer');
         });
 
-        xit('should throw error when min value is not a number', function () {
+        it('should throw error when min value is not a number', function () {
             let call = () => new IntegerField({ min: null });
 
             expect(call).to.throw('Min value must be a number');
         });
 
-        xit('should throw error when min value is not finite', function () {
+        it('should throw error when min value is not finite', function () {
             let call = () => new IntegerField({ min: -Infinity });
 
             expect(call).to.throw('Min value must be a number');
         });
 
-        xit('should throw error when min value is not an integer', function () {
+        it('should throw error when min value is not an integer', function () {
             let call = () => new IntegerField({ min: 12.3 });
 
-            expect(call).to.throw('Min value must be a number');
+            expect(call).to.throw('Min value must be an integer');
         });
 
-        xit('should throw error when max value is not a number', function () {
+        it('should throw error when max value is not a number', function () {
             let call = () => new IntegerField({ max: true });
 
             expect(call).to.throw('Max value must be a number');
         });
 
-        xit('should throw error when max value is not finite', function () {
+        it('should throw error when max value is not finite', function () {
             let call = () => new IntegerField({ max: NaN });
 
             expect(call).to.throw('Max value must be a number');
         });
 
-        xit('should throw error when max value is not an integer', function () {
+        it('should throw error when max value is not an integer', function () {
             let call = () => new IntegerField({ max: 0.1 });
 
             expect(call).to.throw('Max value must be an integer');
         });
 
-        xit('should throw error when min value is greater than max value', function () {
+        it('should throw error when min value is greater than max value', function () {
             let call = () => new IntegerField({ max: -10, min: 10 });
 
             expect(call).to.throw('Max value must be greater than min value');
@@ -108,32 +108,32 @@ describe('IntegerField', function () {
             expect(call).to.throw('Value must be an integer');
         });
 
-        xit('should throw error when value is a NaN', function () {
+        it('should throw error when value is a NaN', function () {
             let field = new IntegerField({});
             let call = () => field.deserialize(NaN);
 
             expect(call).to.throw('Value must be a number');
         });
 
-        xit('should throw error when value is an infinity', function () {
+        it('should throw error when value is an infinity', function () {
             let field = new IntegerField({});
             let call = () => field.deserialize(Infinity);
 
             expect(call).to.throw('Value must be a number');
         });
 
-        xit('should throw error when value is a string which doesn\'t represent integer', function () {
+        it('should throw error when value is a string which doesn\'t represent integer', function () {
             let field = new IntegerField({});
             let call = () => field.deserialize('123af');
 
-            expect(call).to.throw('Value must be an number');
+            expect(call).to.throw('Value must be a number');
         });
 
-        xit('should throw error when value is neither a string nor a number', function () {
+        it('should throw error when value is neither a string nor a number', function () {
             let field = new IntegerField({});
             let call = () => field.deserialize(new Buffer('123'));
 
-            expect(call).to.throw('Value must be an number');
+            expect(call).to.throw('Value must be a number');
         });
 
         it('should throw error when value is empty', function () {

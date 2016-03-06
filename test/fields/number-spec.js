@@ -2,9 +2,9 @@
 
 const expect = require('chai').expect;
 const Field = require('../../lib/fields/field');
-//const NumberField = require('../../lib/fields/number');
+const NumberField = require('../../lib/fields/number');
 
-xdescribe('NumberField', function () {
+describe('NumberField', function () {
     describe('constructor', function () {
         it('should create new instance of field', function () {
             let field = new NumberField();
@@ -101,14 +101,14 @@ xdescribe('NumberField', function () {
             let field = new NumberField({});
             let call = () => field.deserialize('123af');
 
-            expect(call).to.throw('Value must be an number');
+            expect(call).to.throw('Value must be a number');
         });
 
         it('should throw error when value is neither a string nor a number', function () {
             let field = new NumberField({});
             let call = () => field.deserialize(new Buffer('123'));
 
-            expect(call).to.throw('Value must be an number');
+            expect(call).to.throw('Value must be a number');
         });
 
         it('should throw error when value is empty', function () {
