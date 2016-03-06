@@ -57,7 +57,7 @@ describe('StringField', function () {
             expect(call).to.throw('Max length of StringField must be a positive integer');
         });
 
-        xit('should throw error when min length value is greater than max length value', function () {
+        it('should throw error when min length value is greater than max length value', function () {
             let call = () => new StringField({ maxLength: 10, minLength: 100 });
 
             expect(call).to.throw('Max length must be greater than min length');
