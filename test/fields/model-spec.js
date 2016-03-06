@@ -3,17 +3,17 @@
 const expect = require('chai').expect;
 const Model = require('../../lib/model');
 const Field = require('../../lib/fields/field');
-//const ModelField = require('../../lib/fields/model');
+const ModelField = require('../../lib/fields/model');
 
-xdescribe('ModelField', function() {
+describe('ModelField', function() {
     describe('constructor', function() {
         it('should create new instance of field using specified model', function() {
-            let CustomModel = Model.create({});
+            let CustomModel = Model.extend({});
             let field = new ModelField(CustomModel);
 
             expect(field).to.be.instanceOf(Field);
             expect(field).to.be.instanceOf(ModelField);
-            expect(field).to.have.property('model', CustomModel);
+            expect(field).to.have.property('Model', CustomModel);
         });
 
         it('should create new instance of field using specified object to create a new model', function () {
@@ -21,7 +21,7 @@ xdescribe('ModelField', function() {
 
             expect(field).to.be.instanceOf(Field);
             expect(field).to.be.instanceOf(ModelField);
-            expect(field).to.have.property('model.prototype.test', 123);
+            expect(field).to.have.deep.property('Model.prototype.test', 123);
         });
 
         it('should create new instance of field when all params are specified', function () {
@@ -79,19 +79,19 @@ xdescribe('ModelField', function() {
 
             expect(() => {
                 field.deserialize('');
-            }).expect('Value cannot be empty');
+            }).to.throw('Value cannot be empty');
 
             expect(() => {
                 field.deserialize(null);
-            }).expect('Value cannot be empty');
+            }).to.throw('Value cannot be empty');
 
             expect(() => {
                 field.deserialize(undefined);
-            }).expect('Value cannot be empty');
+            }).to.throw('Value cannot be empty');
         });
 
         it('should return null when value is empty end blank values are allowed', function() {
-            let field = new ModelField({ blank: true });
+            let field = new ModelField({}, { blank: true });
 
             expect(field.deserialize('')).to.be.equal(null);
             expect(field.deserialize(null)).to.be.equal(null);
