@@ -1,6 +1,6 @@
 {
   "name": "better-models",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple library for modeling, parsing and validating your data",
   "keywords": [ "model", "mvc", "validation", "schema" ],
   "author": "Józef Sokołowski <github@qzb.me>",

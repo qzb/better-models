@@ -142,5 +142,14 @@ describe('Model', function () {
             expect(json).to.have.property('field1', 'abc');
             expect(json).to.have.property('field2', 12);
         });
+
+        it('shouldn\'t copy __proto__', function () {
+            let DataModel = class extends Model {};
+
+            let model = new DataModel({});
+            let json = model.toJSON();
+
+            expect(json.__proto__).to.not.equal(model.__proto__);
+        });
     });
 });
