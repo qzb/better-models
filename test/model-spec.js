@@ -152,4 +152,15 @@ describe('Model', function () {
             expect(json.__proto__).to.not.equal(model.__proto__);
         });
     });
+
+    describe('getRawData method', function () {
+        it('should return data passed to Model\'s constructor', function () {
+            let DataModel = class extends Model {};
+
+            let data = { foo: 'bar' };
+            let model = new DataModel(data);
+
+            expect(model.getRawData()).to.be.equal(data);
+        });
+    });
 });
