@@ -1,8 +1,13 @@
 {
   "name": "better-models",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple library for modeling, parsing and validating your data",
-  "keywords": [ "model", "mvc", "validation", "schema" ],
+  "keywords": [
+    "model",
+    "mvc",
+    "validation",
+    "schema"
+  ],
   "author": "Józef Sokołowski <github@qzb.me>",
   "license": "MIT",
   "main": "lib/index.js",
@@ -11,7 +16,7 @@
     "test": "./test"
   },
   "repository": {
-    "type" : "git",
+    "type": "git",
     "url": "https://github.com/qzb/better-models"
   },
   "scripts": {
