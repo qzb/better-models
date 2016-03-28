@@ -67,15 +67,30 @@ describe('Model', function () {
 
         it('should copy all properties to prototype', function () {
             let props = {
-                a: 5,
+                a: {},
                 b: () => 5,
                 get c() { return 5; }
             };
             let DataModel = Model.extend(props);
 
-            expect(DataModel.prototype).to.have.ownPropertyDescriptor('a', Object.getOwnPropertyDescriptor(props, 'a'));
-            expect(DataModel.prototype).to.have.ownPropertyDescriptor('b', Object.getOwnPropertyDescriptor(props, 'b'));
-            expect(DataModel.prototype).to.have.ownPropertyDescriptor('c', Object.getOwnPropertyDescriptor(props, 'c'));
+            expect(DataModel.prototype).to.have.ownPropertyDescriptor('a', {
+                value: Object.getOwnPropertyDescriptor(props, 'a').value,
+                writable: true,
+                enumerable: false,
+                configurable: true
+            });
+            expect(DataModel.prototype).to.have.ownPropertyDescriptor('b', {
+                value: Object.getOwnPropertyDescriptor(props, 'b').value,
+                writable: true,
+                enumerable: false,
+                configurable: true
+            });
+            expect(DataModel.prototype).to.have.ownPropertyDescriptor('c', {
+                get: Object.getOwnPropertyDescriptor(props, 'c').get,
+                set: undefined,
+                enumerable: false,
+                configurable: true
+            });
         });
     });
 
