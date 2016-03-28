@@ -163,4 +163,116 @@ describe('Model', function () {
             expect(model.getRawData()).to.be.equal(data);
         });
     });
+    
+    describe('fields static getter', function() {
+        it('should return list of Model\'s fields', function() {
+            let DataModel = class extends Model {};
+            DataModel.prototype.field1 = new Field();
+            DataModel.prototype.field2 = new Field();
+
+            expect(DataModel.fields).to.have.property('field1', DataModel.prototype.field1);
+            expect(DataModel.fields).to.have.property('field2', DataModel.prototype.field2);
+        });
+
+        it('should return frozen object', function() {
+            let DataModel = class extends Model {};
+
+            expect(DataModel.fields).to.be.frozen;
+        });
+
+        it('should include inherited fields', function() {
+            let ParentModel = class extends Model {};
+            let ChildModel = class extends ParentModel {};
+            ParentModel.prototype.field1 = new Field();
+            ParentModel.prototype.field2 = new Field();
+            ChildModel.prototype.field2 = new Field();
+
+            expect(ChildModel.fields).to.have.property('field1', ParentModel.prototype.field1);
+            expect(ChildModel.fields).to.have.property('field2', ChildModel.prototype.field2);
+            expect(ParentModel.fields).to.have.property('field2', ParentModel.prototype.field2);
+        });
+
+        it('should include non-enumerable properties', function () {
+            let DataModel = class extends Model {};
+            Object.defineProperty(DataModel.prototype, 'field1', {
+                value: new Field(),
+                enumerable: false
+            });
+
+            expect(DataModel.fields).to.have.property('field1', DataModel.prototype.field1);
+        });
+
+        it('should allow shadowing parent Model\'s fields with non-field properties', function() {
+            let ParentModel = class extends Model {};
+            let ChildModel = class extends ParentModel {};
+            ParentModel.prototype.field1 = new Field();
+            ParentModel.prototype.field2 = new Field();
+            ChildModel.prototype.field2 = undefined;
+
+            expect(ChildModel.fields).to.have.property('field1', ParentModel.prototype.field1);
+            expect(ChildModel.fields).to.not.have.property('field2');
+            expect(ParentModel.fields).to.have.property('field2', ParentModel.prototype.field2);
+        });
+
+        it('should not include properties which are not instances of Field', function() {
+            let DataModel = class extends Model {};
+            DataModel.prototype.field1 = {};
+            DataModel.prototype.field2 = 'abc';
+
+            expect(DataModel.fields).to.be.eql({});
+        });
+
+        it('should not include getters', function () {
+            let DataModel = class extends Model {};
+
+            // Getters defined inside class aren't enumerable, so I've used defineProperty to be sure it works properly.
+            Object.defineProperty(DataModel.prototype, 'field2', {
+                enumerable: true,
+                get: () => new Field()
+            });
+
+            expect(DataModel.fields).to.be.eql({});
+        });
+
+        it('should not call getters', function () {
+            let DataModel = class extends Model {};
+
+            // Getters defined inside class aren't enumerable, so I've used defineProperty to be sure it works properly.
+            Object.defineProperty(DataModel.prototype, 'field2', {
+                enumerable: true,
+                get: () => {
+                    throw new Error();
+                }
+            });
+
+            expect(() => DataModel.fields).to.not.throw();
+        });
+
+        it('should cache result after first call', function () {
+            let DataModel = class extends Model {};
+
+            DataModel.prototype.field1 = new Field();
+            let result1 = DataModel.fields;
+
+            DataModel.prototype.field2 = new Field();
+            let result2 = DataModel.fields;
+
+            expect(result1).to.be.equal(result2);
+            expect(result2).to.not.have.property('field2');
+        });
+
+        it('should trigger caching parent\'s fields', function () {
+            let ParentModel = class extends Model {};
+            let ChildModel = class extends ParentModel {};
+
+            ParentModel.prototype.field1 = new Field();
+            let result1 = ChildModel.fields;
+
+            ParentModel.prototype.field2 = new Field();
+            let result2 = ParentModel.fields;
+
+            expect(result1).to.not.be.equal(result2);
+            expect(result2).to.not.have.property('field2');
+        });
+    });
 });
