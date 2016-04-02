@@ -143,7 +143,7 @@ describe('Model', function () {
         });
     });
 
-    describe('toJSON method', function () {
+    describe('serialize method', function () {
         it('should serialize not empty fields using serialize method', function () {
             class CustomField extends Field {
                 isBlank(value) {
@@ -159,31 +159,12 @@ describe('Model', function () {
             DataModel.prototype.field = new CustomField();
 
             let model = new DataModel({});
-            let result = model.toJSON();
+            let result = model.serialize();
 
             expect(result).to.have.property('field', 'serialize');
         });
 
-        it('should copy values of non-field properties and getters', function () {
-            let DataModel = class extends Model {
-                constructor() {
-                    super();
-                    this.field1 = 'abc';
-                }
-
-                get field2() {
-                    return 12;
-                }
-            };
-
-            let model = new DataModel({});
-            let json = model.toJSON();
-
-            expect(json).to.have.property('field1', 'abc');
-            expect(json).to.have.property('field2', 12);
-        });
-
-        it('should toJSON empty fields using serializeBlank method', function () {
+        it('should serialize empty fields using serializeBlank method', function () {
             class CustomField extends Field {
                 isBlank(value) {
                     return true;
@@ -202,10 +183,73 @@ describe('Model', function () {
             model.field1 = null;
             model.field2 = undefined;
 
-            let result = model.toJSON();
+            let result = model.serialize();
 
             expect(result).to.have.property('field1', 'serializeBlank');
             expect(result).to.have.property('field2', 'serializeBlank');
+        });
+
+        it('shouldn\'t copy values of non-field properties and getters', function () {
+            let DataModel = class extends Model {
+                constructor() {
+                    super();
+                    this.field1 = 'abc';
+                }
+
+                get field2() {
+                    return 12;
+                }
+            };
+            DataModel.prototype.field3 = true;
+
+            let model = new DataModel({});
+            let result = model.serialize();
+
+            expect(result).to.not.have.property('field1');
+            expect(result).to.not.have.property('field2');
+            expect(result).to.not.have.property('field3');
+        });
+
+        it('should copy values of own, non-field properties when "includeProperties" option is enabled', function () {
+            let DataModel = class extends Model {
+                constructor() {
+                    super();
+
+                    Object.defineProperty(this, 'field1', { get: () => 'bar', enumerable: true });
+
+                    this.field2 = 'abc';
+                    this.field3 = undefined;
+                }
+
+                get field4() {
+                    return 'egg';
+                }
+            };
+            DataModel.prototype.field5 = 'spam';
+
+            let model = new DataModel({});
+            let result = model.serialize({ includeProperties: true });
+
+            expect(result).to.have.property('field1', 'bar');
+            expect(result).to.have.property('field2', 'abc');
+            expect(result).to.not.have.property('field3');
+            expect(result).to.not.have.property('field4');
+            expect(result).to.not.have.property('field5');
+        });
+    });
+
+    describe('toJSON', function () {
+        it('should call serialize method and return it\'s result', function () {
+            let DataModel = class extends Model {
+                serialize() {
+                    return 'serialize';
+                }
+            };
+
+            let model = new DataModel({});
+            let result = model.toJSON();
+
+            expect(result).to.be.equal('serialize');
         });
     });
 
