@@ -111,38 +111,6 @@ describe('NumberField', function () {
             expect(call).to.throw('Value must be a number');
         });
 
-        it('should throw error when value is empty', function () {
-            let field = new NumberField({});
-
-            expect(() => {
-                field.deserialize('');
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(null);
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(undefined);
-            }).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is empty and default value is specified', function () {
-            let field = new NumberField({ default: 5 });
-
-            expect(field.deserialize('')).to.be.equal(5);
-            expect(field.deserialize(null)).to.be.equal(5);
-            expect(field.deserialize(undefined)).to.be.equal(5);
-        });
-
-        it('should return null when value is empty and blank values are allowed', function () {
-            let field = new NumberField({ blank: true });
-
-            expect(field.deserialize('')).to.be.equal(null);
-            expect(field.deserialize(null)).to.be.equal(null);
-            expect(field.deserialize(undefined)).to.be.equal(null);
-        });
-
         it('should throw error when value is less than min value', function () {
             let field = new NumberField({ min: 4 });
             let call = () => field.deserialize(2);

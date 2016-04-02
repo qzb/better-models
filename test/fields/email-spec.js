@@ -80,37 +80,5 @@ describe('EmailField', function () {
 
             expect(call).to.throw('Value must be a string');
         });
-
-        it('should throw error when value is empty', function () {
-            let field = new EmailField({});
-
-            expect(() => {
-                field.deserialize('');
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(null);
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(undefined);
-            }).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is empty and default is specified', function () {
-            let field = new EmailField({ default: 'test@test.com' });
-
-            expect(field.deserialize('')).to.be.equal('test@test.com');
-            expect(field.deserialize(null)).to.be.equal('test@test.com');
-            expect(field.deserialize(undefined)).to.be.equal('test@test.com');
-        });
-
-        it('should return empty string when value is empty and blank values are allowed', function () {
-            let field = new EmailField({ blank: true });
-
-            expect(field.deserialize('')).to.be.equal('');
-            expect(field.deserialize(null)).to.be.equal('');
-            expect(field.deserialize(undefined)).to.be.equal('');
-        });
     });
 });

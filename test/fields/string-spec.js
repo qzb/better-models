@@ -86,43 +86,11 @@ describe('StringField', function () {
             expect(result).to.be.equal('  123456   ');
         });
 
-        it('should throw error when value is empty', function () {
-            let field = new StringField({});
-
-            expect(() => {
-                field.deserialize(undefined)
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(null)
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize('')
-            }).to.throw('Value cannot be empty');
-        });
-
         it('should throw error when value is empty after trimming', function () {
             let field = new StringField({ trim: true });
             let call = () => field.deserialize(' \t\n\r');
 
             expect(call).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is empty and default value is specified', function () {
-            let field = new StringField({ default: 'abc' });
-
-            expect(field.deserialize(undefined)).to.be.equal('abc');
-            expect(field.deserialize(null)).to.be.equal('abc');
-            expect(field.deserialize('')).to.be.equal('abc');
-        });
-
-        it('should return empty string when value is empty and blank values are allowed', function () {
-            let field = new StringField({ blank: true });
-
-            expect(field.deserialize(undefined)).to.be.equal('');
-            expect(field.deserialize(null)).to.be.equal('');
-            expect(field.deserialize('')).to.be.equal('');
         });
 
         it('should throw error when value is not a string', function () {

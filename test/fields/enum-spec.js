@@ -108,37 +108,5 @@ describe('EnumField', function() {
 
             expect(call).to.throw('Value must be one of allowed choices: one, two');
         });
-
-        it('should throw error when value is empty', function() {
-            let field = new EnumField([ 'one' ]);
-
-            expect(() => {
-                field.deserialize('');
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(null);
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(undefined);
-            }).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is empty and default value is specified', function() {
-            let field = new EnumField([ 'one', 'two' ], { default: 'two' });
-
-            expect(field.deserialize('')).to.be.equal('two');
-            expect(field.deserialize(null)).to.be.equal('two');
-            expect(field.deserialize(undefined)).to.be.equal('two');
-        });
-
-        it('should return null when value is empty and blank values are allowed', function() {
-            let field = new EnumField([ 'one' ], { blank: true });
-
-            expect(field.deserialize('')).to.be.equal(null);
-            expect(field.deserialize(null)).to.be.equal(null);
-            expect(field.deserialize(undefined)).to.be.equal(null);
-        });
     });
 });

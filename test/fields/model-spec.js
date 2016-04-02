@@ -69,33 +69,9 @@ describe('ModelField', function() {
             }
 
             let field = new ModelField({ foo: new InvalidField(), bar: new InvalidField() });
-            let call = () => field.deserialize({});
+            let call = () => field.deserialize({ foo: 514 });
 
             expect(call).to.throw('foo: oops!');
-        });
-
-        it('should throw error when value is empty', function() {
-            let field = new ModelField({});
-
-            expect(() => {
-                field.deserialize('');
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(null);
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(undefined);
-            }).to.throw('Value cannot be empty');
-        });
-
-        it('should return null when value is empty end blank values are allowed', function() {
-            let field = new ModelField({}, { blank: true });
-
-            expect(field.deserialize('')).to.be.equal(null);
-            expect(field.deserialize(null)).to.be.equal(null);
-            expect(field.deserialize(undefined)).to.be.equal(null);
         });
     });
 });

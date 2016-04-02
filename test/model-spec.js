@@ -23,21 +23,38 @@ describe('Model', function () {
             expect(model).to.be.instanceOf(Model);
         });
 
-        it('should deserialize fields', function () {
-            class IncrField extends Field {
-                deserialize(value) {
-                    return value + 1;
+        it('should deserialize not empty fields using deserialize method', function () {
+            class CustomField extends Field {
+                deserialize() {
+                    return 'deserialize';
                 }
             }
 
             let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new IncrField();
-            DataModel.prototype.field2 = new IncrField();
+            DataModel.prototype.field = new CustomField();
 
-            let model = new DataModel({ field1: 1, field2: 2 });
+            let model = new DataModel({ field: false });
 
-            expect(model).to.have.property('field1', 2);
-            expect(model).to.have.property('field2', 3);
+            expect(model).to.have.property('field', 'deserialize');
+        });
+
+        it('should deserialize empty fields using deserializeBlank method', function () {
+            class CustomField extends Field {
+                isBlank(value) {
+                    return true;
+                }
+
+                deserializeBlank() {
+                    return 'deserializeBlank';
+                }
+            }
+
+            let DataModel = class extends Model {};
+            DataModel.prototype.field = new CustomField();
+
+            let model = new DataModel({});
+
+            expect(model).to.have.property('field', 'deserializeBlank');
         });
 
         it('should ignore all non-field related properties from specified data object', function () {
@@ -127,16 +144,24 @@ describe('Model', function () {
     });
 
     describe('toJSON method', function () {
-        it('should serialize model\'s fields', function () {
+        it('should serialize not empty fields using serialize method', function () {
+            class CustomField extends Field {
+                isBlank(value) {
+                    return false;
+                }
+
+                serialize(value) {
+                    return 'serialize';
+                }
+            }
+
             let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new Field();
-            DataModel.prototype.field2 = new Field();
+            DataModel.prototype.field = new CustomField();
 
-            let model = new DataModel({ field1: 'abc', field2: 12 });
-            let json = model.toJSON();
+            let model = new DataModel({});
+            let result = model.toJSON();
 
-            expect(json).to.have.property('field1', 'abc');
-            expect(json).to.have.property('field2', 12);
+            expect(result).to.have.property('field', 'serialize');
         });
 
         it('should copy values of non-field properties and getters', function () {
@@ -158,13 +183,29 @@ describe('Model', function () {
             expect(json).to.have.property('field2', 12);
         });
 
-        it('shouldn\'t copy __proto__', function () {
+        it('should toJSON empty fields using serializeBlank method', function () {
+            class CustomField extends Field {
+                isBlank(value) {
+                    return true;
+                }
+
+                serializeBlank(value) {
+                    return 'serializeBlank';
+                }
+            }
+
             let DataModel = class extends Model {};
+            DataModel.prototype.field1 = new CustomField();
+            DataModel.prototype.field2 = new CustomField();
 
-            let model = new DataModel({});
-            let json = model.toJSON();
+            let model = new DataModel({ field1: true, field2: true });
+            model.field1 = null;
+            model.field2 = undefined;
 
-            expect(json.__proto__).to.not.equal(model.__proto__);
+            let result = model.toJSON();
+
+            expect(result).to.have.property('field1', 'serializeBlank');
+            expect(result).to.have.property('field2', 'serializeBlank');
         });
     });
 
@@ -178,7 +219,7 @@ describe('Model', function () {
             expect(model.getRawData()).to.be.equal(data);
         });
     });
-    
+
     describe('fields static getter', function() {
         it('should return list of Model\'s fields', function() {
             let DataModel = class extends Model {};

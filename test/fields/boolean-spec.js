@@ -86,37 +86,5 @@ describe('BooleanField', function () {
 
             expect(call).to.throw('Value must be a boolean');
         });
-
-        it('should throw error when value is empty', function () {
-            let field = new BooleanField({});
-
-            expect(() => {
-                field.deserialize('');
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(null);
-            }).to.throw('Value cannot be empty');
-
-            expect(() => {
-                field.deserialize(undefined);
-            }).to.throw('Value cannot be empty');
-        });
-
-        it('should use default when value is empty and default value is specified', function () {
-            let field = new BooleanField({ default: true });
-
-            expect(field.deserialize('')).to.be.equal(true);
-            expect(field.deserialize(null)).to.be.equal(true);
-            expect(field.deserialize(undefined)).to.be.equal(true);
-        });
-
-        it('should return null when value is empty and blank values are enabled', function () {
-            let field = new BooleanField({ blank: true });
-
-            expect(field.deserialize('')).to.be.equal(null);
-            expect(field.deserialize(null)).to.be.equal(null);
-            expect(field.deserialize(undefined)).to.be.equal(null);
-        });
     });
 });
