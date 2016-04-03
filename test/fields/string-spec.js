@@ -17,7 +17,7 @@ describe('StringField', function () {
         it('should create new instance of field when all params are specified', function () {
             let field = new StringField({
                 default: 'abc',
-                blank: true,
+                optional: true,
                 trim: true,
                 maxLength: 100,
                 minLength: 10

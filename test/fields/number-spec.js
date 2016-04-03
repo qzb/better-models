@@ -16,7 +16,7 @@ describe('NumberField', function () {
         it('should create new instance of field when all params are specified', function () {
             let field = new NumberField({
                 default: 15.51,
-                blank: true,
+                optional: true,
                 min: 10.01,
                 max: 1000.0001
             });

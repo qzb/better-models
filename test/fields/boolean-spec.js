@@ -16,7 +16,7 @@ describe('BooleanField', function () {
         it('should create new instance when all params are specified', function () {
             let field = new BooleanField({
                 default: false,
-                blank: true
+                optional: true
             });
 
             expect(field).to.be.instanceOf(Field);

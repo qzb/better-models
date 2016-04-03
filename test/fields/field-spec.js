@@ -16,7 +16,7 @@ describe('Field', function () {
         it('should create new instance when all params are specified', function () {
             let params = {
                 default: {},
-                blank: true,
+                optional: true,
                 foo: 'bar'
             };
 
@@ -62,7 +62,7 @@ describe('Field', function () {
 
     describe('deserializeBlank method', function () {
         it('should return null when field is optional', function () {
-            let field = new Field({ blank: true });
+            let field = new Field({ optional: true });
 
             let result = field.deserializeBlank();
 
@@ -78,7 +78,7 @@ describe('Field', function () {
         });
 
         it('should return default value when it is specified and field is optional', function() {
-            let field = new Field({ default: 'lime in the coconut', blank: true });
+            let field = new Field({ default: 'lime in the coconut', optional: true });
 
             let result = field.deserializeBlank();
 

@@ -17,7 +17,7 @@ describe('EmailField', function () {
         it('should create new instance of field when all params are specified', function () {
             let field = new EmailField({
                 default: 'test@dev.null',
-                blank: true,
+                optional: true,
                 caseSensitive: true
             });
 

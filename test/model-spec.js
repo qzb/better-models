@@ -3,8 +3,6 @@
 
 const expect = require('chai').expect;
 const Field = require('../lib/fields/field');
-const IntegerField = require('../lib/fields/integer');
-const StringField = require('../lib/fields/string');
 const Model = require('../lib/model');
 
 describe('Model', function () {
