@@ -25,6 +25,7 @@
     "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --recursive --reporter=nyan"
   },
   "dependencies": {
+    "custom-error": "^0.2.1",
     "email-validator": "^1.0.4"
   },
   "devDependencies": {

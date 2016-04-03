@@ -90,7 +90,7 @@ describe('Field', function () {
 
             let call = () => field.deserializeBlank();
 
-            expect(call).to.throw('Value cannot be empty');
+            expect(call).to.throw(Field.ValidationError, 'Value cannot be empty');
         });
     });
 

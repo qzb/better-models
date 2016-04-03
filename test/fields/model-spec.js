@@ -36,13 +36,13 @@ describe('ModelField', function() {
         it('should throw error when model is not specified', function() {
             let call = () => new ModelField();
 
-            expect(call).to.throw('Model is missing');
+            expect(call).to.throw(Error, 'Model is missing');
         });
 
         it('should throw error when default value is specified', function() {
             let call = () => new ModelField({}, { default: {} });
 
-            expect(call).to.throw('This field doesn\'t accept default value');
+            expect(call).to.throw(Error, 'This field doesn\'t accept default value');
         });
     });
 
@@ -58,20 +58,20 @@ describe('ModelField', function() {
             let field = new ModelField({ foo: new Field() });
             let call = () => field.deserialize(123);
 
-            expect(call).to.throw('Value must be an object');
+            expect(call).to.throw(Field.ValidationError, 'Value must be an object');
         });
 
         it('should throw error when value isn\'t valid according to field\'s model', function() {
             class InvalidField extends Field {
                 deserialize() {
-                    throw new Error('oops!');
+                    throw new Field.ValidationError('oops!');
                 }
             }
 
             let field = new ModelField({ foo: new InvalidField(), bar: new InvalidField() });
             let call = () => field.deserialize({ foo: 514 });
 
-            expect(call).to.throw('foo: oops!');
+            expect(call).to.throw(Field.ValidationError, 'foo: oops!');
         });
     });
 });

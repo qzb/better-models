@@ -26,7 +26,7 @@ describe('BooleanField', function () {
         it('should throw error when default value is not a boolean', function () {
             let call = () => new BooleanField({ default: 'true' });
 
-            expect(call).to.throw('Default value must be a boolean');
+            expect(call).to.throw(Error, 'Default value must be a boolean');
         });
     });
 
@@ -77,14 +77,14 @@ describe('BooleanField', function () {
             let field = new BooleanField({});
             let call = () => console.log(field.deserialize('nope'));
 
-            expect(call).to.throw('Value must be a boolean');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a boolean');
         });
 
         it('should throw error when value is neither boolean nor string', function () {
             let field = new BooleanField({});
             let call = () => field.deserialize(0);
 
-            expect(call).to.throw('Value must be a boolean');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a boolean');
         });
     });
 });

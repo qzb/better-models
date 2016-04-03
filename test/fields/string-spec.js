@@ -30,37 +30,37 @@ describe('StringField', function () {
         it('should throw error when default value is not a string', function () {
             let call = () => new StringField({ default: 7 });
 
-            expect(call).to.throw('Default value must be a string');
+            expect(call).to.throw(Error, 'Default value must be a string');
         });
 
         it('should throw error when min length isn\'t an integer', function () {
             let call = () => new StringField({ minLength: 7.000001 });
 
-            expect(call).to.throw('Min length must be a positive integer');
+            expect(call).to.throw(Error, 'Min length must be a positive integer');
         });
 
         it('should throw error when min length is negative', function () {
             let call = () => new StringField({ minLength: -1 });
 
-            expect(call).to.throw('Min length must be a positive integer');
+            expect(call).to.throw(Error, 'Min length must be a positive integer');
         });
 
         it('should throw error when max length isn\'t an integer', function () {
             let call = () => new StringField({ maxLength: 5.55555 });
 
-            expect(call).to.throw('Max length must be a positive integer');
+            expect(call).to.throw(Error, 'Max length must be a positive integer');
         });
 
         it('should throw error when max length is negative', function () {
             let call = () => new StringField({ maxLength: -1 });
 
-            expect(call).to.throw('Max length must be a positive integer');
+            expect(call).to.throw(Error, 'Max length must be a positive integer');
         });
 
         it('should throw error when min length value is greater than max length value', function () {
             let call = () => new StringField({ maxLength: 10, minLength: 100 });
 
-            expect(call).to.throw('Max length must be greater than min length');
+            expect(call).to.throw(Error, 'Max length must be greater than min length');
         });
     });
 
@@ -90,28 +90,28 @@ describe('StringField', function () {
             let field = new StringField({ trim: true });
             let call = () => field.deserialize(' \t\n\r');
 
-            expect(call).to.throw('Value cannot be empty');
+            expect(call).to.throw(Field.ValidationError, 'Value cannot be empty');
         });
 
         it('should throw error when value is not a string', function () {
             let field = new StringField({});
             let call = () => field.deserialize(false);
 
-            expect(call).to.throw('Value must be a string');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a string');
         });
 
         it('should throw error when value\'s length is greater than max length', function () {
             let field = new StringField({ maxLength: 5 });
             let call = () => field.deserialize('123456');
 
-            expect(call).to.throw('Value\'s length cannot be greater than 5');
+            expect(call).to.throw(Field.ValidationError, 'Value\'s length cannot be greater than 5');
         });
 
         it('should throw error when value\'s length is less than min length', function () {
             let field = new StringField({ minLength: 5 });
             let call = () => field.deserialize('1234');
 
-            expect(call).to.throw('Value\'s length cannot be less than 5');
+            expect(call).to.throw(Field.ValidationError, 'Value\'s length cannot be less than 5');
         });
 
         it('shouldn\'t throw error when value\'s length is equal to max length', function () {

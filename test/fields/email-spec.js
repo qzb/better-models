@@ -28,13 +28,13 @@ describe('EmailField', function () {
         it('should throw error when default value is not a string', function () {
             let call = () => new EmailField({ default: 7 });
 
-            expect(call).to.throw('Default value must be a string');
+            expect(call).to.throw(Error, 'Default value must be a string');
         });
 
         it('should throw error when default value is not a valid email address', function () {
             let call = () => new EmailField({ default: 'abcdef' });
 
-            expect(call).to.throw('Default value must be a valid email address');
+            expect(call).to.throw(Error, 'Default value must be a valid email address');
         });
     });
 
@@ -71,14 +71,14 @@ describe('EmailField', function () {
             let field = new EmailField({});
             let call = () => field.deserialize('.test+siabadaba@.gmail.com');
 
-            expect(call).to.throw('Value must be a valid email address');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a valid email address');
         });
 
         it('should throw error when value isn\'t a string', function () {
             let field = new EmailField({});
             let call = () => field.deserialize(123);
 
-            expect(call).to.throw('Value must be a string');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a string');
         });
     });
 });

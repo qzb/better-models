@@ -63,6 +63,21 @@ describe('Model', function () {
             expect(model).to.not.have.property('field1');
             expect(model).to.not.have.property('field2');
         });
+
+        it('shouldn\'t intercept errors other than Field.ValidationError', function () {
+            class CustomField extends Field {
+                deserialize(value) {
+                    throw new Error();
+                }
+            }
+
+            let DataModel = class extends Model {};
+            DataModel.prototype.field = new CustomField();
+
+            let call = () => new DataModel({ field: true });
+
+            expect(call).to.throw(Error);
+        })
     });
 
     describe('extend method', function () {
@@ -113,7 +128,7 @@ describe('Model', function () {
         it('should get all errors', function () {
             class InvalidField extends Field {
                 deserialize(value) {
-                    throw new Error(value);
+                    throw new Field.ValidationError(value);
                 }
             }
 

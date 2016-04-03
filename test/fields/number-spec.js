@@ -28,43 +28,43 @@ describe('NumberField', function () {
         it('should throw error when default value is not a number', function () {
             let call = () => new NumberField({ default: '7' });
 
-            expect(call).to.throw('Default value must be a number');
+            expect(call).to.throw(Error, 'Default value must be a number');
         });
 
         it('should throw error when default value is not finite', function () {
             let call = () => new NumberField({ default: Infinity });
 
-            expect(call).to.throw('Default value must be a number');
+            expect(call).to.throw(Error, 'Default value must be a number');
         });
 
         it('should throw error when min value is not a number', function () {
             let call = () => new NumberField({ min: null });
 
-            expect(call).to.throw('Min value must be a number');
+            expect(call).to.throw(Error, 'Min value must be a number');
         });
 
         it('should throw error when min value is not finite', function () {
             let call = () => new NumberField({ min: -Infinity });
 
-            expect(call).to.throw('Min value must be a number');
+            expect(call).to.throw(Error, 'Min value must be a number');
         });
 
         it('should throw error when max value is not a number', function () {
             let call = () => new NumberField({ max: true });
 
-            expect(call).to.throw('Max value must be a number');
+            expect(call).to.throw(Error, 'Max value must be a number');
         });
 
         it('should throw error when max value is not finite', function () {
             let call = () => new NumberField({ max: NaN });
 
-            expect(call).to.throw('Max value must be a number');
+            expect(call).to.throw(Error, 'Max value must be a number');
         });
 
         it('should throw error when min value is greater than max value', function () {
             let call = () => new NumberField({ max: -10, min: 10 });
 
-            expect(call).to.throw('Max value must be greater than min value');
+            expect(call).to.throw(Error, 'Max value must be greater than min value');
         });
     });
 
@@ -87,42 +87,42 @@ describe('NumberField', function () {
             let field = new NumberField({});
             let call = () => field.deserialize(NaN);
 
-            expect(call).to.throw('Value must be a number');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a number');
         });
 
         it('should throw error when value is an infinity', function () {
             let field = new NumberField({});
             let call = () => field.deserialize(Infinity);
 
-            expect(call).to.throw('Value must be a number');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a number');
         });
 
         it('should throw error when value is a string which doesn\'t represent decimal number', function () {
             let field = new NumberField({});
             let call = () => field.deserialize('123af');
 
-            expect(call).to.throw('Value must be a number');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a number');
         });
 
         it('should throw error when value is neither a string nor a number', function () {
             let field = new NumberField({});
             let call = () => field.deserialize(new Buffer('123'));
 
-            expect(call).to.throw('Value must be a number');
+            expect(call).to.throw(Field.ValidationError, 'Value must be a number');
         });
 
         it('should throw error when value is less than min value', function () {
             let field = new NumberField({ min: 4 });
             let call = () => field.deserialize(2);
 
-            expect(call).to.throw('Value cannot be less than 4');
+            expect(call).to.throw(Field.ValidationError, 'Value cannot be less than 4');
         });
 
         it('should throw error when value is greater than max value', function () {
             let field = new NumberField({ max: -4 });
             let call = () => field.deserialize(-2);
 
-            expect(call).to.throw('Value cannot be greater than -4');
+            expect(call).to.throw(Field.ValidationError, 'Value cannot be greater than -4');
         });
 
         it('shouldn\'t throw error when value is equal to min value', function () {

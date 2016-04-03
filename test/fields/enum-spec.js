@@ -27,49 +27,49 @@ describe('EnumField', function() {
         it('should throw error when list of choices is missing', function () {
             let call = () => new EnumField();
 
-            expect(call).to.throw('Choices list is missing');
+            expect(call).to.throw(Error, 'Choices list is missing');
         });
 
         it('should throw error when list of choices is empty', function () {
             let call = () => new EnumField([]);
 
-            expect(call).to.throw('Choices list cannot be empty');
+            expect(call).to.throw(Error, 'Choices list cannot be empty');
         });
 
         it('should throw error when some choices are doubled', function () {
             let call = () => new EnumField([ 'one', 'two', 'one' ]);
 
-            expect(call).to.throw('Choices cannot be doubled');
+            expect(call).to.throw(Error, 'Choices cannot be doubled');
         });
 
         it('should throw error when two choices are the same after trimming', function () {
             let call = () => new EnumField([ 'one', 'two', ' one ' ]);
 
-            expect(call).to.throw('Choices cannot be doubled');
+            expect(call).to.throw(Error, 'Choices cannot be doubled');
         });
 
         it('should throw error when two choices differs in case only nad caseSensitive option is disabled', function () {
             let call = () => new EnumField([ 'one', 'two', 'ONE' ]);
 
-            expect(call).to.throw('Choices cannot be doubled');
+            expect(call).to.throw(Error, 'Choices cannot be doubled');
         });
 
         it('should\'t throw error when two choices differs in case and caseSensitive options is enabled', function () {
             let call = () => new EnumField([ 'one', 'two', 'ONE' ], { caseSensitive: true });
 
-            expect(call).to.not.throw('Choices cannot be doubled');
+            expect(call).to.not.throw(Error, 'Choices cannot be doubled');
         });
 
         it('should throw error when some of specified choices aren\'t strings', function() {
             let call = () => new EnumField([ 'one', 'two', 3 ]);
 
-            expect(call).to.throw('All choices must be a strings');
+            expect(call).to.throw(Error, 'All choices must be a strings');
         });
 
         it('should throw error when default value is not one of choices', function() {
             let call = () => new EnumField([ 'one', 'two' ], { default: 'three' });
 
-            expect(call).to.throw('Default value must be one of choices');
+            expect(call).to.throw(Error, 'Default value must be one of choices');
         });
     });
 
@@ -99,14 +99,14 @@ describe('EnumField', function() {
             let field = new EnumField([ 'ONE' ], { caseSensitive: true });
             let call = () => field.deserialize('one');
 
-            expect(call).to.throw('Value must be one of allowed choices: ONE');
+            expect(call).to.throw(Field.ValidationError, 'Value must be one of allowed choices: ONE');
         });
 
         it('should throw error when value is not one of choices', function () {
             let field = new EnumField([ 'one', 'two' ]);
             let call = () => field.deserialize('three');
 
-            expect(call).to.throw('Value must be one of allowed choices: one, two');
+            expect(call).to.throw(Field.ValidationError, 'Value must be one of allowed choices: one, two');
         });
     });
 });
