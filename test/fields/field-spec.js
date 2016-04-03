@@ -16,13 +16,15 @@ describe('Field', function () {
         it('should create new instance when all params are specified', function () {
             let params = {
                 default: {},
-                blank: true
+                blank: true,
+                foo: 'bar'
             };
 
             let field = new Field(params);
 
             expect(field).to.be.instanceOf(Field);
-            expect(field).to.have.property('params', params);
+            expect(field.params).to.be.deep.equal(params);
+            expect(field.params).to.be.deep.frozen;
         });
     });
 
