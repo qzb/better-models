@@ -64,14 +64,22 @@ describe('ModelField', function() {
         it('should throw error when value isn\'t valid according to field\'s model', function() {
             class InvalidField extends Field {
                 deserialize() {
-                    throw new Field.ValidationError('oops!');
+                    throw new Field.ValidationError(this.params.msg);
                 }
             }
 
-            let field = new ModelField({ foo: new InvalidField(), bar: new InvalidField() });
-            let call = () => field.deserialize({ foo: 514 });
+            let field = new ModelField({
+                foo: new InvalidField({ msg: 'bar' }),
+                egg: new InvalidField({ msg: 'spam' })
+            });
 
-            expect(call).to.throw(Field.ValidationError, 'foo: oops!');
+            try {
+                field.deserialize({ foo: true, egg: true });
+            } catch (error) {
+                expect(error).to.be.instanceOf(Field.ValidationError);
+                expect(error.message).to.have.property('foo', 'bar');
+                expect(error.message).to.have.property('egg', 'spam');
+            }
         });
     });
 });
