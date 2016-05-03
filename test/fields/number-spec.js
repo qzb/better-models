@@ -25,18 +25,6 @@ describe('NumberField', function () {
             expect(field).to.be.instanceOf(NumberField);
         });
 
-        it('should throw error when default value is not a number', function () {
-            let call = () => new NumberField({ default: '7' });
-
-            expect(call).to.throw(Error, 'Default value must be a number');
-        });
-
-        it('should throw error when default value is not finite', function () {
-            let call = () => new NumberField({ default: Infinity });
-
-            expect(call).to.throw(Error, 'Default value must be a number');
-        });
-
         it('should throw error when min value is not a number', function () {
             let call = () => new NumberField({ min: null });
 

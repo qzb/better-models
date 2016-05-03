@@ -22,12 +22,6 @@ describe('BooleanField', function () {
             expect(field).to.be.instanceOf(Field);
             expect(field).to.be.instanceOf(BooleanField);
         });
-
-        it('should throw error when default value is not a boolean', function () {
-            let call = () => new BooleanField({ default: 'true' });
-
-            expect(call).to.throw(Error, 'Default value must be a boolean');
-        });
     });
 
     describe('deserialize method', function () {

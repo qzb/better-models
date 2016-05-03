@@ -16,7 +16,7 @@ describe('StringField', function () {
 
         it('should create new instance of field when all params are specified', function () {
             let field = new StringField({
-                default: 'abc',
+                default: 'a b c d e f g',
                 optional: true,
                 trim: true,
                 maxLength: 100,
@@ -25,12 +25,6 @@ describe('StringField', function () {
 
             expect(field).to.be.instanceOf(Field);
             expect(field).to.be.instanceOf(StringField);
-        });
-
-        it('should throw error when default value is not a string', function () {
-            let call = () => new StringField({ default: 7 });
-
-            expect(call).to.throw(Error, 'Default value must be a string');
         });
 
         it('should throw error when min length isn\'t an integer', function () {

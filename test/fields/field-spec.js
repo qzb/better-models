@@ -13,18 +13,65 @@ describe('Field', function () {
             expect(field.params).to.be.deep.equal({});
         });
 
-        it('should create new instance when all params are specified', function () {
+        it('should pass all specified arguments to init method', function () {
+            class TestField extends Field {
+                init() {
+                    this.args = Array.prototype.slice.call(arguments);
+                    super.init.apply(this, arguments);
+                }
+            }
+
+            let field = new TestField(1, 2, 3);
+
+            expect(field.args).to.be.deep.equal([1, 2, 3]);
+        });
+
+        it('should freeze params', function () {
+            let field = new Field();
+
+            expect(field.params).to.be.frozen;
+        });
+
+        it('should throw error when default value is invalid', function () {
+            class TestField extends Field {
+                deserialize() {
+                    throw new Field.ValidationError('Value is invalid');
+                }
+            }
+
+            let call = () => new TestField({ default: true });
+
+            expect(call).to.throw(Error, 'Default value is invalid: value is invalid');
+        });
+
+        it('should throw error when unexpected error occurs during deserialization of default value', function () {
+            let error = new Error();
+            class TestField extends Field {
+                deserialize() {
+                    throw error;
+                }
+            }
+
+            let call = () => new TestField({ default: true });
+
+            expect(call).to.throw(error);
+        });
+    });
+
+    describe('init method', function () {
+        it('should copy params to field', function () {
             let params = {
                 default: {},
                 optional: true,
                 foo: 'bar'
             };
 
-            let field = new Field(params);
+            let field = {};
+            Field.prototype.init.call(field, params);
 
-            expect(field).to.be.instanceOf(Field);
             expect(field.params).to.be.deep.equal(params);
-            expect(field.params).to.be.deep.frozen;
+            expect(field.params).to.be.not.equal(params);
+            expect(field.params).to.be.not.frozen;
         });
     });
 

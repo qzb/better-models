@@ -38,12 +38,6 @@ describe('ModelField', function() {
 
             expect(call).to.throw(Error, 'Model is missing');
         });
-
-        it('should throw error when default value is specified', function() {
-            let call = () => new ModelField({}, { default: {} });
-
-            expect(call).to.throw(Error, 'This field doesn\'t accept default value');
-        });
     });
 
     describe('deserialize method', function () {
