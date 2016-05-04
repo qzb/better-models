@@ -76,5 +76,22 @@ describe('ModelField', function() {
             }
         });
     });
+
+    describe('serialize method', function () {
+        it('should serialize value', function () {
+            class CustomField extends Field {
+                serialize() {
+                    return true;
+                }
+            }
+
+            let DataModel = Model.extend({ foo: new CustomField() });
+            let field = new ModelField(DataModel);
+            let value = new DataModel({ foo: false });
+            let result = field.serialize(value);
+
+            expect(result).to.be.deep.equal({ foo: true });
+        });
+    });
 });
 
