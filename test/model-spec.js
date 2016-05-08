@@ -14,7 +14,7 @@ describe('Model', function () {
         });
 
         it('should create instance of subclass of Model', function () {
-            let DataModel = class extends Model {};
+            let DataModel = Model.extend({});
             let model = new DataModel({});
 
             expect(model).to.be.instanceOf(DataModel);
@@ -28,8 +28,9 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = class extends Model {};
-            DataModel.prototype.field = new CustomField();
+            let DataModel = Model.extend({
+                field: new CustomField()
+            });
 
             let model = new DataModel({ field: false });
 
@@ -47,8 +48,9 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = class extends Model {};
-            DataModel.prototype.field = new CustomField();
+            let DataModel = Model.extend({
+                field: new CustomField()
+            });
 
             let model = new DataModel({});
 
@@ -56,7 +58,7 @@ describe('Model', function () {
         });
 
         it('should ignore all non-field related properties from specified data object', function () {
-            let DataModel = class extends Model {};
+            let DataModel = Model.extend({});
 
             let model = new DataModel({ field1: 1, field2: 2 });
 
@@ -71,8 +73,9 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = class extends Model {};
-            DataModel.prototype.field = new CustomField();
+            let DataModel = Model.extend({
+                field: new CustomField()
+            });
 
             let call = () => new DataModel({ field: true });
 
@@ -95,32 +98,40 @@ describe('Model', function () {
             expect(ExtraDataModel.prototype).to.be.instanceOf(DataModel);
         });
 
-        it('should copy all properties to prototype', function () {
-            let props = {
-                a: {},
-                b: () => 5,
-                get c() { return 5; }
-            };
-            let DataModel = Model.extend(props);
+        it('should create static property "fields" containing all fields of model', function () {
+            let field1 = new Field();
+            let field2 = new Field();
 
-            expect(DataModel.prototype).to.have.ownPropertyDescriptor('a', {
-                value: Object.getOwnPropertyDescriptor(props, 'a').value,
-                writable: true,
-                enumerable: false,
-                configurable: true
-            });
-            expect(DataModel.prototype).to.have.ownPropertyDescriptor('b', {
-                value: Object.getOwnPropertyDescriptor(props, 'b').value,
-                writable: true,
-                enumerable: false,
-                configurable: true
-            });
-            expect(DataModel.prototype).to.have.ownPropertyDescriptor('c', {
-                get: Object.getOwnPropertyDescriptor(props, 'c').get,
-                set: undefined,
-                enumerable: false,
-                configurable: true
-            });
+            let DataModel = Model.extend({ field1, field2 });
+
+            expect(DataModel.fields).to.have.property('field1', field1);
+            expect(DataModel.fields).to.have.property('field2', field2);
+        });
+
+        it('should add parent\'s fields to fields property', function () {
+            let parentField1 = new Field();
+            let parentField2 = new Field();
+            let ownField2 = new Field();
+            let ownField3 = new Field();
+
+            let ParentModel = Model.extend({ field1: parentField1, field2: parentField2 });
+            let DataModel = ParentModel.extend({ field2: ownField2, field3: ownField3 });
+
+            expect(DataModel.fields).to.have.property('field1', parentField1);
+            expect(DataModel.fields).to.have.property('field2', ownField2);
+            expect(DataModel.fields).to.have.property('field3', ownField3);
+        });
+
+        it('should freeze fields property', function () {
+            let DataModel = Model.extend({});
+
+            expect(DataModel.fields).to.be.frozen;
+        });
+
+        it('should throw error when any of specified properties is not a Field instance', function () {
+            let call = () => Model.extend({ invalid: true });
+
+            expect(call).to.throw('All properties passed to extend method must be instances of Field class');
         });
     });
 
@@ -132,9 +143,10 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new InvalidField();
-            DataModel.prototype.field2 = new InvalidField();
+            let DataModel = Model.extend({
+                field1: new InvalidField(),
+                field2: new InvalidField()
+            });
 
             let model = new DataModel({ field1: 'abc', field2: 'def', field3: 12 });
             let errors = model.getErrors();
@@ -145,9 +157,10 @@ describe('Model', function () {
         });
 
         it('should return null when there is no errors', function () {
-            let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new Field();
-            DataModel.prototype.field2 = new Field();
+            let DataModel = Model.extend({
+                field1: new Field(),
+                field2: new Field()
+            });
 
             let model = new DataModel({ field1: 12, field2: false });
             let errors = model.getErrors();
@@ -156,7 +169,7 @@ describe('Model', function () {
         });
     });
 
-    describe('serialize method', function () {
+    describe('serialize', function () {
         it('should serialize not empty fields using serialize method', function () {
             class CustomField extends Field {
                 isBlank(value) {
@@ -168,8 +181,9 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = class extends Model {};
-            DataModel.prototype.field = new CustomField();
+            let DataModel = Model.extend({
+                field: new CustomField()
+            });
 
             let model = new DataModel({});
             let result = model.serialize();
@@ -183,14 +197,15 @@ describe('Model', function () {
                     return true;
                 }
 
-                serializeBlank(value) {
+                serializeBlank() {
                     return 'serializeBlank';
                 }
             }
 
-            let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new CustomField();
-            DataModel.prototype.field2 = new CustomField();
+            let DataModel = Model.extend({
+                field1: new CustomField(),
+                field2: new CustomField()
+            });
 
             let model = new DataModel({ field1: true, field2: true });
             model.field1 = null;
@@ -202,190 +217,43 @@ describe('Model', function () {
             expect(result).to.have.property('field2', 'serializeBlank');
         });
 
-        it('shouldn\'t copy values of non-field properties and getters', function () {
-            let DataModel = class extends Model {
-                constructor() {
-                    super();
-                    this.field1 = 'abc';
-                }
-
-                get field2() {
-                    return 12;
-                }
-            };
-            DataModel.prototype.field3 = true;
-
+        it('shouldn\'t copy values of non-field properties', function () {
+            let DataModel = Model.extend({});
             let model = new DataModel({});
+
+            model.field1 = 'one';
+            model.constructor.prototype.field2 = 'two';
+
             let result = model.serialize();
 
             expect(result).to.not.have.property('field1');
             expect(result).to.not.have.property('field2');
-            expect(result).to.not.have.property('field3');
-        });
-
-        it('should copy values of own, non-field properties when "includeProperties" option is enabled', function () {
-            let DataModel = class extends Model {
-                constructor() {
-                    super();
-
-                    Object.defineProperty(this, 'field1', { get: () => 'bar', enumerable: true });
-
-                    this.field2 = 'abc';
-                    this.field3 = undefined;
-                }
-
-                get field4() {
-                    return 'egg';
-                }
-            };
-            DataModel.prototype.field5 = 'spam';
-
-            let model = new DataModel({});
-            let result = model.serialize({ includeProperties: true });
-
-            expect(result).to.have.property('field1', 'bar');
-            expect(result).to.have.property('field2', 'abc');
-            expect(result).to.not.have.property('field3');
-            expect(result).to.not.have.property('field4');
-            expect(result).to.not.have.property('field5');
         });
     });
 
-    describe('toJSON', function () {
-        it('should call serialize method and return it\'s result', function () {
-            let DataModel = class extends Model {
-                serialize() {
-                    return 'serialize';
-                }
+    describe('toJSON method', function () {
+        it('should be alias for serialize method', function () {
+            let DataModel = Model.extend({});
+            let model = new DataModel({});
+
+            model.serialize = function () {
+                return Array.from(arguments);
             };
 
-            let model = new DataModel({});
-            let result = model.toJSON();
+            let result = model.toJSON(1, 2, 3);
 
-            expect(result).to.be.equal('serialize');
+            expect(result).to.be.deep.equal([ 1, 2, 3 ]);
         });
     });
 
     describe('getRawData method', function () {
         it('should return data passed to Model\'s constructor', function () {
-            let DataModel = class extends Model {};
+            let DataModel = Model.extend({});
 
             let data = { foo: 'bar' };
             let model = new DataModel(data);
 
             expect(model.getRawData()).to.be.equal(data);
-        });
-    });
-
-    describe('fields static getter', function() {
-        it('should return list of Model\'s fields', function() {
-            let DataModel = class extends Model {};
-            DataModel.prototype.field1 = new Field();
-            DataModel.prototype.field2 = new Field();
-
-            expect(DataModel.fields).to.have.property('field1', DataModel.prototype.field1);
-            expect(DataModel.fields).to.have.property('field2', DataModel.prototype.field2);
-        });
-
-        it('should return frozen object', function() {
-            let DataModel = class extends Model {};
-
-            expect(DataModel.fields).to.be.frozen;
-        });
-
-        it('should include inherited fields', function() {
-            let ParentModel = class extends Model {};
-            let ChildModel = class extends ParentModel {};
-            ParentModel.prototype.field1 = new Field();
-            ParentModel.prototype.field2 = new Field();
-            ChildModel.prototype.field2 = new Field();
-
-            expect(ChildModel.fields).to.have.property('field1', ParentModel.prototype.field1);
-            expect(ChildModel.fields).to.have.property('field2', ChildModel.prototype.field2);
-            expect(ParentModel.fields).to.have.property('field2', ParentModel.prototype.field2);
-        });
-
-        it('should include non-enumerable properties', function () {
-            let DataModel = class extends Model {};
-            Object.defineProperty(DataModel.prototype, 'field1', {
-                value: new Field(),
-                enumerable: false
-            });
-
-            expect(DataModel.fields).to.have.property('field1', DataModel.prototype.field1);
-        });
-
-        it('should allow shadowing parent Model\'s fields with non-field properties', function() {
-            let ParentModel = class extends Model {};
-            let ChildModel = class extends ParentModel {};
-            ParentModel.prototype.field1 = new Field();
-            ParentModel.prototype.field2 = new Field();
-            ChildModel.prototype.field2 = undefined;
-
-            expect(ChildModel.fields).to.have.property('field1', ParentModel.prototype.field1);
-            expect(ChildModel.fields).to.not.have.property('field2');
-            expect(ParentModel.fields).to.have.property('field2', ParentModel.prototype.field2);
-        });
-
-        it('should not include properties which are not instances of Field', function() {
-            let DataModel = class extends Model {};
-            DataModel.prototype.field1 = {};
-            DataModel.prototype.field2 = 'abc';
-
-            expect(DataModel.fields).to.be.eql({});
-        });
-
-        it('should not include getters', function () {
-            let DataModel = class extends Model {};
-
-            // Getters defined inside class aren't enumerable, so I've used defineProperty to be sure it works properly.
-            Object.defineProperty(DataModel.prototype, 'field2', {
-                enumerable: true,
-                get: () => new Field()
-            });
-
-            expect(DataModel.fields).to.be.eql({});
-        });
-
-        it('should not call getters', function () {
-            let DataModel = class extends Model {};
-
-            // Getters defined inside class aren't enumerable, so I've used defineProperty to be sure it works properly.
-            Object.defineProperty(DataModel.prototype, 'field2', {
-                enumerable: true,
-                get: () => {
-                    throw new Error();
-                }
-            });
-
-            expect(() => DataModel.fields).to.not.throw();
-        });
-
-        it('should cache result after first call', function () {
-            let DataModel = class extends Model {};
-
-            DataModel.prototype.field1 = new Field();
-            let result1 = DataModel.fields;
-
-            DataModel.prototype.field2 = new Field();
-            let result2 = DataModel.fields;
-
-            expect(result1).to.be.equal(result2);
-            expect(result2).to.not.have.property('field2');
-        });
-
-        it('should trigger caching parent\'s fields', function () {
-            let ParentModel = class extends Model {};
-            let ChildModel = class extends ParentModel {};
-
-            ParentModel.prototype.field1 = new Field();
-            let result1 = ChildModel.fields;
-
-            ParentModel.prototype.field2 = new Field();
-            let result2 = ParentModel.fields;
-
-            expect(result1).to.not.be.equal(result2);
-            expect(result2).to.not.have.property('field2');
         });
     });
 });

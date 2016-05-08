@@ -17,11 +17,12 @@ describe('ModelField', function() {
         });
 
         it('should create new instance of field using specified object to create a new model', function () {
-            let field = new ModelField({ test: 123 });
+            let field = new Field();
+            let modelField = new ModelField({ field });
 
-            expect(field).to.be.instanceOf(Field);
-            expect(field).to.be.instanceOf(ModelField);
-            expect(field).to.have.deep.property('Model.prototype.test', 123);
+            expect(modelField).to.be.instanceOf(Field);
+            expect(modelField).to.be.instanceOf(ModelField);
+            expect(modelField).to.have.deep.property('Model.fields.field', field);
         });
 
         it('should create new instance of field when all params are specified', function () {
