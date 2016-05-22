@@ -17,7 +17,7 @@ describe('StringField', function () {
         it('should create new instance of field when all params are specified', function () {
             const field = new StringField({
                 default: 'a b c d e f g',
-                optional: true,
+                required: true,
                 trim: true,
                 maxLength: 100,
                 minLength: 10
@@ -80,8 +80,8 @@ describe('StringField', function () {
             expect(result).to.be.equal('  123456   ');
         });
 
-        it('should throw error when value is empty after trimming', function () {
-            const field = new StringField({ trim: true });
+        it('should throw error when field is required and value is empty after trimming', function () {
+            const field = new StringField({ trim: true, required: true });
             const call = () => field.deserialize(' \t\n\r');
 
             expect(call).to.throw(Field.ValidationError, 'Value cannot be empty');

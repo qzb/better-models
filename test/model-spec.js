@@ -314,7 +314,7 @@ describe('Model', function () {
         });
 
         it('should pass specified options to field\'s deserializeBlank method', function () {
-            const field = new Field({ optional: true });
+            const field = new Field();
 
             field.deserializeBlank = chai.spy();
 

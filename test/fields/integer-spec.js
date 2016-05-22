@@ -16,7 +16,7 @@ describe('IntegerField', function () {
         it('should create new instance of field when all params are specified', function () {
             const field = new IntegerField({
                 default: 15,
-                optional: true,
+                required: true,
                 min: 10,
                 max: 1000
             });

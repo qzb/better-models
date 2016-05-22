@@ -16,7 +16,7 @@ describe('EnumField', function() {
         it('should create new instance of field when all params are specified', function() {
             const field = new EnumField([ 'one' ], {
                 default: 'one',
-                optional: true,
+                required: true,
                 caseSensitive: true
             });
 

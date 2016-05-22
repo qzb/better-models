@@ -21,8 +21,8 @@ describe('ArrayField', function() {
 
         it('should create new instance of field when all params are specified', function () {
             const field = new ArrayField(new Field(), {
-                blank: true,
                 default: [ 1, 2 ],
+                required: true,
                 minLength: 1,
                 maxLength: 2
             });

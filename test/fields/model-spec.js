@@ -31,7 +31,8 @@ describe('ModelField', function() {
 
         it('should create new instance of field when all params are specified', function () {
             const field = new ModelField({}, {
-                optional: true
+                default: {},
+                required: true
             });
 
             expect(field).to.be.instanceOf(Field);

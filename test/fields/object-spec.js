@@ -21,8 +21,8 @@ describe('ObjectField', function() {
 
         it('should create new instance of field when all params are specified', function () {
             const field = new ObjectField(new Field(), {
-                blank: true,
-                default: { foo: 'bar' }
+                default: { foo: 'bar' },
+                required: true
             });
 
             expect(field).to.be.instanceOf(Field);
