@@ -6,7 +6,7 @@ const Field = require('../../lib/fields/field');
 describe('Field', function () {
     describe('constructor', function () {
         it('should create new instance', function () {
-            let field = new Field();
+            const field = new Field();
 
             expect(field).to.be.instanceOf(Field);
             expect(field).to.have.property('params');
@@ -21,13 +21,13 @@ describe('Field', function () {
                 }
             }
 
-            let field = new TestField(1, 2, 3);
+            const field = new TestField(1, 2, 3);
 
             expect(field.args).to.be.deep.equal([1, 2, 3]);
         });
 
         it('should freeze params', function () {
-            let field = new Field();
+            const field = new Field();
 
             expect(field.params).to.be.frozen;
         });
@@ -39,20 +39,20 @@ describe('Field', function () {
                 }
             }
 
-            let call = () => new TestField({ default: true });
+            const call = () => new TestField({ default: true });
 
             expect(call).to.throw(Error, 'Default value is invalid: value is invalid');
         });
 
         it('should throw error when unexpected error occurs during deserialization of default value', function () {
-            let error = new Error();
+            const error = new Error();
             class TestField extends Field {
                 deserialize() {
                     throw error;
                 }
             }
 
-            let call = () => new TestField({ default: true });
+            const call = () => new TestField({ default: true });
 
             expect(call).to.throw(error);
         });
@@ -60,13 +60,13 @@ describe('Field', function () {
 
     describe('init method', function () {
         it('should copy params to field', function () {
-            let params = {
+            const params = {
                 default: {},
                 optional: true,
                 foo: 'bar'
             };
 
-            let field = {};
+            const field = {};
             Field.prototype.init.call(field, params);
 
             expect(field.params).to.be.deep.equal(params);
@@ -77,10 +77,10 @@ describe('Field', function () {
 
     describe('serialize method', function () {
         it('should return passed value', function () {
-            let field = new Field();
+            const field = new Field();
 
-            let value = {};
-            let result = field.serialize(value);
+            const value = {};
+            const result = field.serialize(value);
 
             expect(result).to.be.equal(value);
         });
@@ -88,10 +88,10 @@ describe('Field', function () {
 
     describe('deserialize method', function () {
         it('should return passed value', function () {
-            let field = new Field();
+            const field = new Field();
 
-            let value = {};
-            let result = field.deserialize(value);
+            const value = {};
+            const result = field.deserialize(value);
 
             expect(result).to.be.equal(value);
         });
@@ -99,9 +99,9 @@ describe('Field', function () {
 
     describe('serializeBlank method', function () {
         it('should return passed value', function () {
-            let field = new Field();
+            const field = new Field();
 
-            let result = field.serializeBlank();
+            const result = field.serializeBlank();
 
             expect(result).to.be.null;
         });
@@ -109,33 +109,33 @@ describe('Field', function () {
 
     describe('deserializeBlank method', function () {
         it('should return null when field is optional', function () {
-            let field = new Field({ optional: true });
+            const field = new Field({ optional: true });
 
-            let result = field.deserializeBlank();
+            const result = field.deserializeBlank();
 
             expect(result).to.be.null;
         });
 
         it('should return default value when it is specified and field is not optional', function () {
-            let field = new Field({ default: 'lime in the coconut' });
+            const field = new Field({ default: 'lime in the coconut' });
 
-            let result = field.deserializeBlank();
+            const result = field.deserializeBlank();
 
             expect(result).to.be.equal('lime in the coconut');
         });
 
         it('should return default value when it is specified and field is optional', function() {
-            let field = new Field({ default: 'lime in the coconut', optional: true });
+            const field = new Field({ default: 'lime in the coconut', optional: true });
 
-            let result = field.deserializeBlank();
+            const result = field.deserializeBlank();
 
             expect(result).to.be.equal('lime in the coconut');
         });
 
         it('should throw error when field is not optional and there is no default value', function () {
-            let field = new Field();
+            const field = new Field();
 
-            let call = () => field.deserializeBlank();
+            const call = () => field.deserializeBlank();
 
             expect(call).to.throw(Field.ValidationError, 'Value cannot be empty');
         });
@@ -143,43 +143,43 @@ describe('Field', function () {
 
     describe('isBlank', function () {
         it('should return true when value is null', function () {
-            let field = new Field();
-            let result = field.isBlank(null);
+            const field = new Field();
+            const result = field.isBlank(null);
 
             expect(result).to.be.true;
         });
 
         it('should return true when value is undefined', function () {
-            let field = new Field();
-            let result = field.isBlank(undefined);
+            const field = new Field();
+            const result = field.isBlank(undefined);
 
             expect(result).to.be.true;
         });
 
         it('should return true when value is empty string', function () {
-            let field = new Field();
-            let result = field.isBlank('');
+            const field = new Field();
+            const result = field.isBlank('');
 
             expect(result).to.be.true;
         });
 
         it('should return false when value is empty array', function () {
-            let field = new Field();
-            let result = field.isBlank([]);
+            const field = new Field();
+            const result = field.isBlank([]);
 
             expect(result).to.be.false;
         });
 
         it('should return false when value is empty object', function () {
-            let field = new Field();
-            let result = field.isBlank({});
+            const field = new Field();
+            const result = field.isBlank({});
 
             expect(result).to.be.false;
         });
 
         it('should return false when value is false', function () {
-            let field = new Field();
-            let result = field.isBlank(false);
+            const field = new Field();
+            const result = field.isBlank(false);
 
             expect(result).to.be.false;
         });

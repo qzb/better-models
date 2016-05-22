@@ -11,8 +11,8 @@ chai.use(spies);
 describe('ObjectField', function() {
     describe('constructor', function() {
         it('should create new instance of field using specified field', function() {
-            let field = new Field();
-            let objectField = new ObjectField(field);
+            const field = new Field();
+            const objectField = new ObjectField(field);
 
             expect(objectField).to.be.instanceOf(Field);
             expect(objectField).to.be.instanceOf(ObjectField);
@@ -20,7 +20,7 @@ describe('ObjectField', function() {
         });
 
         it('should create new instance of field when all params are specified', function () {
-            let field = new ObjectField(new Field(), {
+            const field = new ObjectField(new Field(), {
                 blank: true,
                 default: { foo: 'bar' }
             });
@@ -30,7 +30,7 @@ describe('ObjectField', function() {
         });
 
         it('should throw error when field is not specified', function() {
-            let call = () => new ObjectField();
+            const call = () => new ObjectField();
 
             expect(call).to.throw('Field is missing');
         });
@@ -42,25 +42,25 @@ describe('ObjectField', function() {
                 deserialize() { return true }
             }
 
-            let field = new ObjectField(new CustomField());
+            const field = new ObjectField(new CustomField());
 
-            let result = field.deserialize({ foo: 1, bar: 2 });
+            const result = field.deserialize({ foo: 1, bar: 2 });
 
             expect(result).to.be.deep.equal({ foo: true, bar: true });
         });
 
         it('should deserialize empty object', function () {
-            let field = new ObjectField(new Field());
+            const field = new ObjectField(new Field());
 
-            let result = field.deserialize({});
+            const result = field.deserialize({});
 
             expect(result).to.be.deep.equal({});
         });
 
         it('should throw error when value is not an object', function() {
-            let field = new ObjectField(new Field());
+            const field = new ObjectField(new Field());
 
-            let call = () => field.deserialize(123);
+            const call = () => field.deserialize(123);
 
             expect(call).to.throw(Field.ValidationError, 'Value must be an object');
         });
@@ -70,7 +70,7 @@ describe('ObjectField', function() {
                 deserialize(v) { throw new Field.ValidationError(v) }
             }
 
-            let field = new ObjectField(new InvalidField());
+            const field = new ObjectField(new InvalidField());
 
             try {
                 field.deserialize({ foo: 1, bar: 2 });
@@ -82,26 +82,26 @@ describe('ObjectField', function() {
         });
 
         it('should not intercept errors other than ValidationError', function () {
-            let error = new Error();
+            const error = new Error();
 
             class InvalidField extends Field {
                 deserialize(v) { throw error }
             }
 
-            let field = new ObjectField(new InvalidField());
+            const field = new ObjectField(new InvalidField());
 
-            let call = () => field.deserialize({ foo: 'bar' });
+            const call = () => field.deserialize({ foo: 'bar' });
 
             expect(call).to.throw(error);
         });
 
         it('should pass specified options to child-field\'s deserialize method', function () {
-            let childField = new Field();
-            let objectField = new ObjectField(childField);
+            const childField = new Field();
+            const objectField = new ObjectField(childField);
 
             childField.deserialize = chai.spy();
 
-            let opts = { option: 'option' };
+            const opts = { option: 'option' };
 
             objectField.deserialize({ foo: 'bar' }, opts);
 
@@ -115,28 +115,28 @@ describe('ObjectField', function() {
                 serialize() { return true }
             }
 
-            let field = new ObjectField(new CustomField());
+            const field = new ObjectField(new CustomField());
 
-            let result = field.serialize({ foo: false, bar: false });
+            const result = field.serialize({ foo: false, bar: false });
 
             expect(result).to.be.deep.equal({ foo: true, bar: true });
         });
 
         it('should deserialize empty object', function () {
-            let field = new ObjectField(new Field());
+            const field = new ObjectField(new Field());
 
-            let result = field.serialize({});
+            const result = field.serialize({});
 
             expect(result).to.be.deep.equal({});
         });
 
         it('should pass specified options to child-field\'s serialize method', function () {
-            let childField = new Field();
-            let objectField = new ObjectField(childField);
+            const childField = new Field();
+            const objectField = new ObjectField(childField);
 
             childField.serialize = chai.spy();
 
-            let opts = { option: 'option' };
+            const opts = { option: 'option' };
 
             objectField.serialize({ foo: 'bar' }, opts);
 

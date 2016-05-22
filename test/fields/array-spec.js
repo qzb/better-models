@@ -11,8 +11,8 @@ chai.use(spies);
 describe('ArrayField', function() {
     describe('constructor', function() {
         it('should create new instance of field using specified field', function() {
-            let field = new Field();
-            let arrayField = new ArrayField(field);
+            const field = new Field();
+            const arrayField = new ArrayField(field);
 
             expect(arrayField).to.be.instanceOf(Field);
             expect(arrayField).to.be.instanceOf(ArrayField);
@@ -20,7 +20,7 @@ describe('ArrayField', function() {
         });
 
         it('should create new instance of field when all params are specified', function () {
-            let field = new ArrayField(new Field(), {
+            const field = new ArrayField(new Field(), {
                 blank: true,
                 default: [ 1, 2 ],
                 minLength: 1,
@@ -32,7 +32,7 @@ describe('ArrayField', function() {
         });
 
         it('should throw error when field is not specified', function() {
-            let call = () => new ArrayField();
+            const call = () => new ArrayField();
 
             expect(call).to.throw('Field is missing');
         });
@@ -44,25 +44,25 @@ describe('ArrayField', function() {
                 deserialize() { return true }
             }
 
-            let field = new ArrayField(new CustomField());
+            const field = new ArrayField(new CustomField());
 
-            let result = field.deserialize([ 1, 2 ]);
+            const result = field.deserialize([ 1, 2 ]);
 
             expect(result).to.be.deep.equal([ true, true ]);
         });
 
         it('should deserialize empty array', function () {
-            let field = new ArrayField(new Field());
+            const field = new ArrayField(new Field());
 
-            let result = field.deserialize([]);
+            const result = field.deserialize([]);
 
             expect(result).to.be.deep.equal([]);
         });
 
         it('should throw error when value is not an array', function() {
-            let field = new ArrayField(new Field());
+            const field = new ArrayField(new Field());
 
-            let call = () => field.deserialize(123);
+            const call = () => field.deserialize(123);
 
             expect(call).to.throw(Field.ValidationError, 'Value must be an array');
         });
@@ -72,7 +72,7 @@ describe('ArrayField', function() {
                 deserialize(v) { throw new Field.ValidationError(v) }
             }
 
-            let field = new ArrayField(new InvalidField());
+            const field = new ArrayField(new InvalidField());
 
             try {
                 field.deserialize([ 1, 2 ]);
@@ -84,62 +84,62 @@ describe('ArrayField', function() {
         });
 
         it('should not intercept errors other than ValidationError', function () {
-            let error = new Error();
+            const error = new Error();
 
             class InvalidField extends Field {
                 deserialize(v) { throw error }
             }
 
-            let field = new ArrayField(new InvalidField());
+            const field = new ArrayField(new InvalidField());
 
-            let call = () => field.deserialize([ 1 ]);
+            const call = () => field.deserialize([ 1 ]);
 
             expect(call).to.throw(error);
         });
 
         it('should throw error array\'s length is less than min length', function() {
-            let field = new ArrayField(new Field(), { minLength: 2 });
+            const field = new ArrayField(new Field(), { minLength: 2 });
 
-            let call = () => field.deserialize([ 1 ]);
+            const call = () => field.deserialize([ 1 ]);
 
             expect(call).to.throw(Field.ValidationError, 'Value must have at least 2 elements');
         });
 
         it('should throw when array\'s length is greater than than max length', function() {
-            let field = new ArrayField(new Field(), { maxLength: 2 });
+            const field = new ArrayField(new Field(), { maxLength: 2 });
 
-            let call = () => field.deserialize([ 1, 2, 3 ]);
+            const call = () => field.deserialize([ 1, 2, 3 ]);
 
             expect(call).to.throw(Field.ValidationError, 'Value must have at most 2 elements');
         });
 
         it('should not throw when array\'s length is less than or equal to max length', function() {
-            let field = new ArrayField(new Field(), { maxLength: 2 });
+            const field = new ArrayField(new Field(), { maxLength: 2 });
 
-            let call1 = () => field.deserialize([ 1, 2 ]);
-            let call2 = () => field.deserialize([ 1 ]);
+            const call1 = () => field.deserialize([ 1, 2 ]);
+            const call2 = () => field.deserialize([ 1 ]);
 
             expect(call1).to.not.throw();
             expect(call2).to.not.throw();
         });
 
         it('should not throw when array\'s length is greater than or equal to min length', function() {
-            let field = new ArrayField(new Field(), { minLength: 2 });
+            const field = new ArrayField(new Field(), { minLength: 2 });
 
-            let call1 = () => field.deserialize([ 1, 2, 3 ]);
-            let call2 = () => field.deserialize([ 1, 2 ]);
+            const call1 = () => field.deserialize([ 1, 2, 3 ]);
+            const call2 = () => field.deserialize([ 1, 2 ]);
 
             expect(call1).to.not.throw();
             expect(call2).to.not.throw();
         });
 
         it('should pass specified options to child-field\'s deserialize method', function () {
-            let childField = new Field();
-            let arrayField = new ArrayField(childField);
+            const childField = new Field();
+            const arrayField = new ArrayField(childField);
 
             childField.deserialize = chai.spy();
 
-            let opts = { option: 'option' };
+            const opts = { option: 'option' };
 
             arrayField.deserialize([ 1 ], opts);
 
@@ -153,28 +153,28 @@ describe('ArrayField', function() {
                 serialize() { return true }
             }
 
-            let field = new ArrayField(new CustomField());
+            const field = new ArrayField(new CustomField());
 
-            let result = field.serialize([ 1, 2 ]);
+            const result = field.serialize([ 1, 2 ]);
 
             expect(result).to.be.deep.equal([ true, true ]);
         });
 
         it('should deserialize empty array', function () {
-            let field = new ArrayField(new Field());
+            const field = new ArrayField(new Field());
 
-            let result = field.serialize([]);
+            const result = field.serialize([]);
 
             expect(result).to.be.deep.equal([]);
         });
 
         it('should pass specified options to child-field\'s serialize method', function () {
-            let childField = new Field();
-            let arrayField = new ArrayField(childField);
+            const childField = new Field();
+            const arrayField = new ArrayField(childField);
 
             childField.serialize = chai.spy();
 
-            let opts = { option: 'option' };
+            const opts = { option: 'option' };
 
             arrayField.serialize([ 1 ], opts);
 

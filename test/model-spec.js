@@ -12,38 +12,38 @@ chai.use(spies);
 describe('Model', function () {
     describe('constructor', function () {
         it('should throw error when try to create instance of Model directly', function () {
-            let call = () => new Model({});
+            const call = () => new Model({});
 
             expect(call).to.throw('You can only create instances of subclasses of Model');
         });
 
         it('should throw error when try to create instance of Model which was not created with extend method', function () {
-            let DataModel = class extends Model {};
+            const DataModel = class extends Model {};
 
-            let call = () => new DataModel({});
+            const call = () => new DataModel({});
 
             expect(call).to.throw('Model classes must be created using Model.extend method');
         });
 
         it('should create instance of subclass of Model', function () {
-            let DataModel = Model.extend({});
-            let model = new DataModel({});
+            const DataModel = Model.extend({});
+            const model = new DataModel({});
 
             expect(model).to.be.instanceOf(DataModel);
             expect(model).to.be.instanceOf(Model);
         });
 
         it('should use deserialize method to deserialize provided data', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
             DataModel.deserialize = chai.spy(() => ({
                 field1: 'foo',
                 field2: 'bar'
             }));
 
-            let data = {};
-            let opts = {};
-            let result = new DataModel(data, opts);
+            const data = {};
+            const opts = {};
+            const result = new DataModel(data, opts);
 
             expect(DataModel.deserialize).to.have.been.called.with.exactly(data, opts);
             expect(result).to.be.instanceOf(DataModel);
@@ -58,11 +58,11 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new CustomField()
             });
 
-            let call = () => new DataModel({ field: true });
+            const call = () => new DataModel({ field: true });
 
             expect(call).to.not.throw();
         });
@@ -74,11 +74,11 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new CustomField()
             });
 
-            let call = () => new DataModel({ field: true });
+            const call = () => new DataModel({ field: true });
 
             expect(call).to.throw(Error);
         });
@@ -86,37 +86,37 @@ describe('Model', function () {
 
     describe('extend method', function () {
         it('should create subclass of Model', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
             expect(DataModel.prototype).to.be.instanceOf(Model);
         });
 
         it('should create subclass of subclass of Model', function () {
-            let DataModel = Model.extend({});
-            let ExtraDataModel = DataModel.extend({});
+            const DataModel = Model.extend({});
+            const ExtraDataModel = DataModel.extend({});
 
             expect(ExtraDataModel.prototype).to.be.instanceOf(Model);
             expect(ExtraDataModel.prototype).to.be.instanceOf(DataModel);
         });
 
         it('should create static property "fields" containing all fields of model', function () {
-            let field1 = new Field();
-            let field2 = new Field();
+            const field1 = new Field();
+            const field2 = new Field();
 
-            let DataModel = Model.extend({ field1, field2 });
+            const DataModel = Model.extend({ field1, field2 });
 
             expect(DataModel.fields).to.have.property('field1', field1);
             expect(DataModel.fields).to.have.property('field2', field2);
         });
 
         it('should add parent\'s fields to fields property', function () {
-            let parentField1 = new Field();
-            let parentField2 = new Field();
-            let ownField2 = new Field();
-            let ownField3 = new Field();
+            const parentField1 = new Field();
+            const parentField2 = new Field();
+            const ownField2 = new Field();
+            const ownField3 = new Field();
 
-            let ParentModel = Model.extend({ field1: parentField1, field2: parentField2 });
-            let DataModel = ParentModel.extend({ field2: ownField2, field3: ownField3 });
+            const ParentModel = Model.extend({ field1: parentField1, field2: parentField2 });
+            const DataModel = ParentModel.extend({ field2: ownField2, field3: ownField3 });
 
             expect(DataModel.fields).to.have.property('field1', parentField1);
             expect(DataModel.fields).to.have.property('field2', ownField2);
@@ -124,13 +124,13 @@ describe('Model', function () {
         });
 
         it('should freeze fields property', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
             expect(DataModel.fields).to.be.frozen;
         });
 
         it('should throw error when any of specified properties is not a Field instance', function () {
-            let call = () => Model.extend({ invalid: true });
+            const call = () => Model.extend({ invalid: true });
 
             expect(call).to.throw('All properties passed to extend method must be instances of Field class');
         });
@@ -138,27 +138,27 @@ describe('Model', function () {
 
     describe('getErrors method', function () {
         it('should return validation errors', function () {
-            let DataModel = Model.extend({});
-            let error = new Field.ValidationError({});
+            const DataModel = Model.extend({});
+            const error = new Field.ValidationError({});
 
             DataModel.deserialize = function () {
                 throw error;
             };
 
-            let model = new DataModel({});
-            let result = model.getErrors();
+            const model = new DataModel({});
+            const result = model.getErrors();
 
             expect(result).to.be.equal(error.message);
         });
 
         it('should return null when there is no errors', function () {
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field1: new Field(),
                 field2: new Field()
             });
 
-            let model = new DataModel({ field1: 12, field2: false });
-            let errors = model.getErrors();
+            const model = new DataModel({ field1: 12, field2: false });
+            const errors = model.getErrors();
 
             expect(errors).to.be.null;
         });
@@ -166,11 +166,11 @@ describe('Model', function () {
 
     describe('getOptions method', function () {
         it('should return options passed to constructor', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
-            let opts = { option: 'option' };
-            let model = new DataModel({}, opts);
-            let result = model.getOptions();
+            const opts = { option: 'option' };
+            const model = new DataModel({}, opts);
+            const result = model.getOptions();
 
             expect(result).to.be.deep.equal(opts);
             expect(result).to.be.not.equal(opts);
@@ -178,10 +178,10 @@ describe('Model', function () {
         });
 
         it('should return empty object when no options were passed to constructor', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
-            let model = new DataModel({});
-            let result = model.getOptions();
+            const model = new DataModel({});
+            const result = model.getOptions();
 
             expect(result).to.be.deep.equal({});
             expect(result).to.be.frozen;
@@ -190,10 +190,10 @@ describe('Model', function () {
 
     describe('getRawData method', function () {
         it('should return data passed to Model\'s constructor', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
-            let data = { foo: 'bar' };
-            let model = new DataModel(data);
+            const data = { foo: 'bar' };
+            const model = new DataModel(data);
 
             expect(model.getRawData()).to.be.equal(data);
         });
@@ -201,13 +201,13 @@ describe('Model', function () {
 
     describe('toJSON method', function () {
         it('should call serialize method', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
             DataModel.serialize = chai.spy(() => 'SERIALIZED DATA');
 
-            let opts = {};
-            let model = new DataModel({}, opts);
-            let result = model.toJSON();
+            const opts = {};
+            const model = new DataModel({}, opts);
+            const result = model.toJSON();
 
             expect(DataModel.serialize).to.be.called.with.exactly(model, opts);
             expect(result).to.be.deep.equal('SERIALIZED DATA');
@@ -222,11 +222,11 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new CustomField()
             });
 
-            let result = DataModel.deserialize({ field: false });
+            const result = DataModel.deserialize({ field: false });
 
             expect(result).to.have.property('field', 'deserialize');
         });
@@ -238,23 +238,23 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new CustomField()
             });
 
-            let result = DataModel.deserialize({});
+            const result = DataModel.deserialize({});
 
             expect(result).to.have.property('field', 'deserializeBlank');
         });
 
         it('should use isBlank method to determine if field is empty', function () {
-            let field = new Field();
+            const field = new Field();
 
             field.isBlank = (value) => !!value;
             field.deserialize = chai.spy();
             field.deserializeBlank = chai.spy();
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field1: field,
                 field2: field
             });
@@ -275,7 +275,7 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field1: new InvalidField({ msg: 'abc' }),
                 field2: new InvalidField({ msg: 'def' })
             });
@@ -290,9 +290,9 @@ describe('Model', function () {
         });
 
         it('should ignore all non-field related properties from specified data object', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
-            let result = DataModel.deserialize({
+            const result = DataModel.deserialize({
                 foo: 'bar'
             });
 
@@ -300,13 +300,13 @@ describe('Model', function () {
         });
 
         it('should pass specified options to field\'s deserialize method', function () {
-            let field = new Field();
+            const field = new Field();
 
             field.deserialize = chai.spy();
 
-            let DataModel = Model.extend({ field });
-            let data = { field: 'field' };
-            let opts = { option: 'option' };
+            const DataModel = Model.extend({ field });
+            const data = { field: 'field' };
+            const opts = { option: 'option' };
 
             DataModel.deserialize(data, opts);
 
@@ -314,12 +314,12 @@ describe('Model', function () {
         });
 
         it('should pass specified options to field\'s deserializeBlank method', function () {
-            let field = new Field({ optional: true });
+            const field = new Field({ optional: true });
 
             field.deserializeBlank = chai.spy();
 
-            let DataModel = Model.extend({ field });
-            let opts = { option: 'option' };
+            const DataModel = Model.extend({ field });
+            const opts = { option: 'option' };
 
             DataModel.deserialize({}, opts);
 
@@ -327,11 +327,11 @@ describe('Model', function () {
         });
 
         it('shouldn\'t deserialize missing properties when "partial" option is enabled', function () {
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new Field({ default: true })
             });
 
-            let result = DataModel.deserialize({}, { partial: true });
+            const result = DataModel.deserialize({}, { partial: true });
 
             expect(result).to.not.have.property('field');
         });
@@ -345,11 +345,11 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new CustomField()
             });
 
-            let result = DataModel.serialize({ field: true });
+            const result = DataModel.serialize({ field: true });
 
             expect(result).to.have.property('field', 'serialize');
         });
@@ -361,21 +361,21 @@ describe('Model', function () {
                 }
             }
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field1: new CustomField(),
                 field2: new CustomField()
             });
 
-            let result = DataModel.serialize({});
+            const result = DataModel.serialize({});
 
             expect(result).to.have.property('field1', 'serializeBlank');
             expect(result).to.have.property('field2', 'serializeBlank');
         });
 
         it('shouldn\'t copy values of non-field properties', function () {
-            let DataModel = Model.extend({});
+            const DataModel = Model.extend({});
 
-            let result = DataModel.serialize({
+            const result = DataModel.serialize({
                 foo: 'bar'
             });
 
@@ -383,18 +383,18 @@ describe('Model', function () {
         });
 
         it('should use isBlank method to determine if field is empty', function () {
-            let field = new Field();
+            const field = new Field();
 
             field.isBlank = (value) => !!value;
             field.serialize = chai.spy();
             field.serializeBlank = chai.spy();
 
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field1: field,
                 field2: field
             });
 
-            let result = DataModel.serialize({
+            const result = DataModel.serialize({
                 field1: null,
                 field2: true
             });
@@ -404,13 +404,13 @@ describe('Model', function () {
         });
 
         it('should pass options to field\'s serialize method', function () {
-             let field = new Field();
+             const field = new Field();
 
             field.serialize = chai.spy();
 
-            let DataModel = Model.extend({ field });
-            let data = { field: 'field' };
-            let opts = { option: 'option' };
+            const DataModel = Model.extend({ field });
+            const data = { field: 'field' };
+            const opts = { option: 'option' };
 
             DataModel.serialize(data, opts);
 
@@ -418,12 +418,12 @@ describe('Model', function () {
         });
 
         it('should pass options to field\'s serializeBlank method', function () {
-            let field = new Field();
+            const field = new Field();
 
             field.serializeBlank = chai.spy();
 
-            let DataModel = Model.extend({ field });
-            let opts = { option: 'option' };
+            const DataModel = Model.extend({ field });
+            const opts = { option: 'option' };
 
             DataModel.serialize({}, opts);
 
@@ -431,11 +431,11 @@ describe('Model', function () {
         });
 
         it('shouldn\'t serialize missing properties when "partial" option is enabled', function () {
-            let DataModel = Model.extend({
+            const DataModel = Model.extend({
                 field: new Field({ default: true })
             });
 
-            let result = DataModel.serialize({}, { partial: true });
+            const result = DataModel.serialize({}, { partial: true });
 
             expect(result).to.not.have.property('field');
         });

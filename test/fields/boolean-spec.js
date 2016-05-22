@@ -7,14 +7,14 @@ const BooleanField = require('../../lib/fields/boolean');
 describe('BooleanField', function () {
     describe('constructor', function () {
         it('should create new instance', function () {
-            let field = new BooleanField();
+            const field = new BooleanField();
 
             expect(field).to.be.instanceOf(Field);
             expect(field).to.be.instanceOf(BooleanField);
         });
 
         it('should create new instance when all params are specified', function () {
-            let field = new BooleanField({
+            const field = new BooleanField({
                 default: false,
                 optional: true
             });
@@ -26,21 +26,21 @@ describe('BooleanField', function () {
 
     describe('deserialize method', function () {
         it('should deserialize boolean "true" to true', function () {
-            let field = new BooleanField({});
-            let result = field.deserialize(true);
+            const field = new BooleanField({});
+            const result = field.deserialize(true);
 
             expect(result).to.be.equal(true);
         });
 
         it('should deserialize boolean "false" to false', function () {
-            let field = new BooleanField({});
-            let result = field.deserialize(false);
+            const field = new BooleanField({});
+            const result = field.deserialize(false);
 
             expect(result).to.be.equal(false);
         });
 
         it('should deserialize strings representing any YAML boolean literals', function () {
-            let field = new BooleanField({});
+            const field = new BooleanField({});
 
             expect(field.deserialize('y')).to.be.equal(true);
             expect(field.deserialize('yes')).to.be.equal(true);
@@ -68,15 +68,15 @@ describe('BooleanField', function () {
         });
 
         it('should throw error when value is a string but doesn\'t match to any YAML literals', function () {
-            let field = new BooleanField({});
-            let call = () => console.log(field.deserialize('nope'));
+            const field = new BooleanField({});
+            const call = () => console.log(field.deserialize('nope'));
 
             expect(call).to.throw(Field.ValidationError, 'Value must be a boolean');
         });
 
         it('should throw error when value is neither boolean nor string', function () {
-            let field = new BooleanField({});
-            let call = () => field.deserialize(0);
+            const field = new BooleanField({});
+            const call = () => field.deserialize(0);
 
             expect(call).to.throw(Field.ValidationError, 'Value must be a boolean');
         });

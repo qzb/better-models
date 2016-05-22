@@ -12,8 +12,8 @@ chai.use(spies);
 describe('ModelField', function() {
     describe('constructor', function() {
         it('should create new instance of field using specified model', function() {
-            let CustomModel = Model.extend({});
-            let field = new ModelField(CustomModel);
+            const CustomModel = Model.extend({});
+            const field = new ModelField(CustomModel);
 
             expect(field).to.be.instanceOf(Field);
             expect(field).to.be.instanceOf(ModelField);
@@ -21,8 +21,8 @@ describe('ModelField', function() {
         });
 
         it('should create new instance of field using specified object to create a new model', function () {
-            let field = new Field();
-            let modelField = new ModelField({ field });
+            const field = new Field();
+            const modelField = new ModelField({ field });
 
             expect(modelField).to.be.instanceOf(Field);
             expect(modelField).to.be.instanceOf(ModelField);
@@ -30,7 +30,7 @@ describe('ModelField', function() {
         });
 
         it('should create new instance of field when all params are specified', function () {
-            let field = new ModelField({}, {
+            const field = new ModelField({}, {
                 optional: true
             });
 
@@ -39,7 +39,7 @@ describe('ModelField', function() {
         });
 
         it('should throw error when model is not specified', function() {
-            let call = () => new ModelField();
+            const call = () => new ModelField();
 
             expect(call).to.throw(Error, 'Model is missing');
         });
@@ -47,16 +47,16 @@ describe('ModelField', function() {
 
     describe('deserialize method', function () {
         it('should deserialize value', function() {
-            let field = new ModelField({ foo: new Field() });
-            let result = field.deserialize({ foo: 123, bar: 456 });
+            const field = new ModelField({ foo: new Field() });
+            const result = field.deserialize({ foo: 123, bar: 456 });
 
             expect(result).to.be.not.an.instanceOf(Model);
             expect(result).to.be.deep.equal({ foo: 123 });
         });
 
         it('should throw error when value is not an object', function() {
-            let field = new ModelField({ foo: new Field() });
-            let call = () => field.deserialize(123);
+            const field = new ModelField({ foo: new Field() });
+            const call = () => field.deserialize(123);
 
             expect(call).to.throw(Field.ValidationError, 'Value must be an object');
         });
@@ -68,7 +68,7 @@ describe('ModelField', function() {
                 }
             }
 
-            let field = new ModelField({
+            const field = new ModelField({
                 foo: new InvalidField({ msg: 'bar' }),
                 egg: new InvalidField({ msg: 'spam' })
             });
@@ -83,9 +83,9 @@ describe('ModelField', function() {
         });
 
         it('should pass specified options to model\'s deserialize method', function () {
-            let field = new ModelField({});
-            let data = { foo: 'bar' };
-            let opts = { option: 'option' };
+            const field = new ModelField({});
+            const data = { foo: 'bar' };
+            const opts = { option: 'option' };
 
             field.Model.deserialize = chai.spy();
 
@@ -103,11 +103,11 @@ describe('ModelField', function() {
                 }
             }
 
-            let field = new ModelField({
+            const field = new ModelField({
                 foo: new CustomField()
             });
 
-            let result = field.serialize({
+            const result = field.serialize({
                 foo: false
             });
 
@@ -115,9 +115,9 @@ describe('ModelField', function() {
         });
 
         it('should pass specified options to model\'s serialize method', function () {
-            let field = new ModelField({});
-            let data = { foo: 'bar' };
-            let opts = { option: 'option' };
+            const field = new ModelField({});
+            const data = { foo: 'bar' };
+            const opts = { option: 'option' };
 
             field.Model.serialize = chai.spy();
 
