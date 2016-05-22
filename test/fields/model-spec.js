@@ -50,7 +50,8 @@ describe('ModelField', function() {
             let field = new ModelField({ foo: new Field() });
             let result = field.deserialize({ foo: 123, bar: 456 });
 
-            expect(result).to.be.eql({ foo: 123 });
+            expect(result).to.be.not.an.instanceOf(Model);
+            expect(result).to.be.deep.equal({ foo: 123 });
         });
 
         it('should throw error when value is not an object', function() {
@@ -81,34 +82,48 @@ describe('ModelField', function() {
             }
         });
 
-        it('should pass specified options to field\'s model', function () {
-            let DataModel = Model.extend({});
-            let SpyModel = chai.spy(() => new DataModel({}));
-            let field = new ModelField(SpyModel);
-
+        it('should pass specified options to model\'s deserialize method', function () {
+            let field = new ModelField({});
             let data = { foo: 'bar' };
             let opts = { option: 'option' };
 
+            field.Model.deserialize = chai.spy();
+
             field.deserialize(data, opts);
 
-            expect(SpyModel).to.have.been.called.with.exactly(data, opts);
+            expect(field.Model.deserialize).to.have.been.called.with.exactly(data, opts);
         });
     });
 
     describe('serialize method', function () {
         it('should serialize value', function () {
             class CustomField extends Field {
-                serialize() {
-                    return true;
+                serialize(value) {
+                    return !value;
                 }
             }
 
-            let DataModel = Model.extend({ foo: new CustomField() });
-            let field = new ModelField(DataModel);
-            let value = new DataModel({ foo: false });
-            let result = field.serialize(value);
+            let field = new ModelField({
+                foo: new CustomField()
+            });
+
+            let result = field.serialize({
+                foo: false
+            });
 
             expect(result).to.be.deep.equal({ foo: true });
+        });
+
+        it('should pass specified options to model\'s serialize method', function () {
+            let field = new ModelField({});
+            let data = { foo: 'bar' };
+            let opts = { option: 'option' };
+
+            field.Model.serialize = chai.spy();
+
+            field.serialize(data, opts);
+
+            expect(field.Model.serialize).to.have.been.called.with.exactly(data, opts);
         });
     });
 });
