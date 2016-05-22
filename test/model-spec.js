@@ -1,9 +1,13 @@
 /* global describe, it */
 'use strict';
 
+const chai = require('chai');
 const expect = require('chai').expect;
+const spies = require('chai-spies');
 const Field = require('../lib/fields/field');
 const Model = require('../lib/model');
+
+chai.use(spies);
 
 describe('Model', function () {
     describe('constructor', function () {
@@ -80,7 +84,44 @@ describe('Model', function () {
             let call = () => new DataModel({ field: true });
 
             expect(call).to.throw(Error);
-        })
+        });
+
+        it('should pass specified options to field\'s deserialize method', function () {
+            let field = new Field();
+
+            field.deserialize = chai.spy();
+
+            let DataModel = Model.extend({ field });
+            let data = { field: 'field' };
+            let opts = { option: 'option' };
+
+            new DataModel(data, opts);
+
+            expect(field.deserialize).to.have.been.called.with.exactly(data.field, opts);
+        });
+
+        it('should pass specified options to field\'s deserializeBlank method', function () {
+            let field = new Field({ optional: true });
+
+            field.deserializeBlank = chai.spy();
+
+            let DataModel = Model.extend({ field });
+            let opts = { option: 'option' };
+
+            new DataModel({}, opts);
+
+            expect(field.deserializeBlank).to.have.been.called.with.exactly(opts);
+        });
+
+        it('shouldn\'t deserialize missing properties when "partial" option is enabled', function () {
+            let DataModel = Model.extend({
+                field: new Field({ default: true })
+            });
+
+            let result = new DataModel({}, { partial: true });
+
+            expect(result).to.not.have.property('field');
+        });
     });
 
     describe('extend method', function () {
@@ -169,6 +210,30 @@ describe('Model', function () {
         });
     });
 
+    describe('getOptions method', function () {
+        it('should return options passed to constructor', function () {
+            let DataModel = Model.extend({});
+
+            let opts = { option: 'option' };
+            let model = new DataModel({}, opts);
+            let result = model.getOptions();
+
+            expect(result).to.be.deep.equal(opts);
+            expect(result).to.be.not.equal(opts);
+            expect(result).to.be.frozen;
+        });
+
+        it('should return empty object when no options were passed to constructor', function () {
+            let DataModel = Model.extend({});
+
+            let model = new DataModel({});
+            let result = model.getOptions();
+
+            expect(result).to.be.deep.equal({});
+            expect(result).to.be.frozen;
+        });
+    });
+
     describe('serialize', function () {
         it('should serialize not empty fields using serialize method', function () {
             class CustomField extends Field {
@@ -228,6 +293,43 @@ describe('Model', function () {
 
             expect(result).to.not.have.property('field1');
             expect(result).to.not.have.property('field2');
+        });
+
+        it('should pass to field\'s serialize method all options passed to constructor', function () {
+             let field = new Field();
+
+            field.serialize = chai.spy();
+
+            let DataModel = Model.extend({ field });
+            let data = { field: 'field' };
+            let opts = { option: 'option' };
+
+            new DataModel(data, opts).serialize();
+
+            expect(field.serialize).to.have.been.called.with.exactly(data.field, opts);
+        });
+
+        it('should pass to field\'s serializeBlank method all options passed to constructor', function () {
+            let field = new Field();
+
+            field.serializeBlank = chai.spy();
+
+            let DataModel = Model.extend({ field });
+            let opts = { option: 'option' };
+
+            new DataModel({}, opts).serialize();
+
+            expect(field.serializeBlank).to.have.been.called.with.exactly(opts);
+        });
+
+        it('shouldn\'t serialize missing properties when "partial" option is enabled', function () {
+            let DataModel = Model.extend({
+                field: new Field({ default: true })
+            });
+
+            let result = new DataModel({}, { partial: true }).serialize();
+
+            expect(result).to.not.have.property('field');
         });
     });
 

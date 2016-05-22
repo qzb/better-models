@@ -1,6 +1,6 @@
 # Better Models
 
-  Simple library for modeling, parsing and validating your data. Inspired by Django Models.
+  Simple library for modeling, parsing and validating your data.
 
   [![NPM Version][npm-image]][npm-url]
   [![Build][travis-image]][travis-url]

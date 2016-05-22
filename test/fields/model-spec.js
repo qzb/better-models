@@ -1,9 +1,13 @@
 'use strict';
 
+const chai = require('chai');
 const expect = require('chai').expect;
+const spies = require('chai-spies');
 const Model = require('../../lib/model');
 const Field = require('../../lib/fields/field');
 const ModelField = require('../../lib/fields/model');
+
+chai.use(spies);
 
 describe('ModelField', function() {
     describe('constructor', function() {
@@ -75,6 +79,19 @@ describe('ModelField', function() {
                 expect(error.message).to.have.property('foo', 'bar');
                 expect(error.message).to.have.property('egg', 'spam');
             }
+        });
+
+        it('should pass specified options to field\'s model', function () {
+            let DataModel = Model.extend({});
+            let SpyModel = chai.spy(() => new DataModel({}));
+            let field = new ModelField(SpyModel);
+
+            let data = { foo: 'bar' };
+            let opts = { option: 'option' };
+
+            field.deserialize(data, opts);
+
+            expect(SpyModel).to.have.been.called.with.exactly(data, opts);
         });
     });
 

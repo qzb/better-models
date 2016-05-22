@@ -1,8 +1,12 @@
 'use strict';
 
+const chai = require('chai');
 const expect = require('chai').expect;
+const spies = require('chai-spies');
 const Field = require('../../lib/fields/field');
 const ArrayField = require('../../lib/fields/array');
+
+chai.use(spies);
 
 describe('ArrayField', function() {
     describe('constructor', function() {
@@ -128,6 +132,19 @@ describe('ArrayField', function() {
             expect(call1).to.not.throw();
             expect(call2).to.not.throw();
         });
+
+        it('should pass specified options to child-field\'s deserialize method', function () {
+            let childField = new Field();
+            let arrayField = new ArrayField(childField);
+
+            childField.deserialize = chai.spy();
+
+            let opts = { option: 'option' };
+
+            arrayField.deserialize([ 1 ], opts);
+
+            expect(childField.deserialize).to.have.been.called.with.exactly(1, opts);
+        });
     });
 
     describe('serialize method', function () {
@@ -149,6 +166,19 @@ describe('ArrayField', function() {
             let result = field.serialize([]);
 
             expect(result).to.be.deep.equal([]);
+        });
+
+        it('should pass specified options to child-field\'s serialize method', function () {
+            let childField = new Field();
+            let arrayField = new ArrayField(childField);
+
+            childField.serialize = chai.spy();
+
+            let opts = { option: 'option' };
+
+            arrayField.serialize([ 1 ], opts);
+
+            expect(childField.serialize).to.have.been.called.with.exactly(1, opts);
         });
     });
 });
