@@ -20,9 +20,9 @@
     "url": "https://github.com/qzb/better-models"
   },
   "scripts": {
-    "test": "mocha --recursive --check-leaks --inline-diffs --no-exit",
-    "test-ci": "istanbul cover --report lcovonly -- node_modules/mocha/bin/_mocha --recursive --check-leaks --inline-diffs --no-exit",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --recursive --reporter=nyan"
+    "test": "standard && mocha --recursive --check-leaks --inline-diffs --no-exit",
+    "test-ci": "standard && istanbul cover --report lcovonly -- node_modules/mocha/bin/_mocha --recursive --check-leaks --inline-diffs --no-exit",
+    "test-cov": "standard && istanbul cover node_modules/mocha/bin/_mocha -- --recursive --reporter=nyan"
   },
   "dependencies": {
     "custom-error": "^0.2.1",
@@ -32,6 +32,7 @@
     "chai": "^3.4.1",
     "chai-spies": "^0.7.1",
     "istanbul": "^0.4.2",
-    "mocha": "^2.3.4"
+    "mocha": "^2.3.4",
+    "standard": "^7.1.2"
   }
 }
