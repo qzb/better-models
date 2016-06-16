@@ -59,6 +59,22 @@ describe('StringField', function () {
     })
   })
 
+  describe('isBlank method', function () {
+    it('should return true when trimming is enabled and value contains only whitespaces', function () {
+      const field = new StringField({ trim: true, required: true })
+      const result = field.isBlank(' \t\n\r')
+
+      expect(result).to.true
+    })
+
+    it('should return false when trimming is disabled and value contains only whitespaces', function () {
+      const field = new StringField({ trim: false, required: true })
+      const result = field.isBlank(' \t\n\r')
+
+      expect(result).to.false
+    })
+  })
+
   describe('deserialize method', function () {
     it('should deserialize string', function () {
       const field = new StringField({})
@@ -79,13 +95,6 @@ describe('StringField', function () {
       const result = field.deserialize('  123456   ')
 
       expect(result).to.be.equal('  123456   ')
-    })
-
-    it('should throw error when field is required and value is empty after trimming', function () {
-      const field = new StringField({ trim: true, required: true })
-      const call = () => field.deserialize(' \t\n\r')
-
-      expect(call).to.throw(Field.ValidationError, 'Value cannot be empty')
     })
 
     it('should throw error when value is not a string', function () {

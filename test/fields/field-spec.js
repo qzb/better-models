@@ -141,6 +141,15 @@ describe('Field', function () {
 
       expect(call).to.throw(Field.ValidationError, 'Value cannot be empty')
     })
+
+    it('should deserialize default value before returning it', function () {
+      let field = new Field({ default: 'lime in the coconut', required: true })
+      field.deserialize = () => 'Whoo-whoo-whoo'
+
+      let result = field.deserializeBlank()
+
+      expect(result).to.be.equal('Whoo-whoo-whoo')
+    })
   })
 
   describe('isBlank', function () {
